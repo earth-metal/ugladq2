@@ -9,11 +9,10 @@
 #define FUNC_BUTTON_ROTATING		//rotating button
 #define LOGFILE						//log file
 #define CLIENTLAG						//client lag
-#define VWEP							//VWep patch
 #define ZOID							//CTF
 #define CTF_HOOK						//CTF direct hook
 #define ROCKETARENA					//Rocket Arena 2
-#define CH								//
+//#define CH								//Colored Hitman
 #define XATRIX							//Xatrix mission pack 1
 #define ROGUE							//Rogue mission pack 2
 //-------------------------------------------------------------
