@@ -84,7 +84,7 @@ void Lag_ExtendDelayeducmdHeap(void)
 	} //end for
 	h->next = heap;
 	heap = h;
-	gi.dprintf("extended delayed ucmd heap\n");
+	//gi.dprintf("extended delayed ucmd heap\n");
 } //end of the function Lag_ExtendDelayeducmdHeap
 //========================================================================
 //
