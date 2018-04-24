@@ -7,10 +7,6 @@
 #include "bl_redirgi.h"
 #endif //BOT
 
-#ifdef OBSERVER
-#include "p_observer.h"
-#endif //OBSERVER
-
 #ifdef CLIENTLAG
 #include "p_lag.h"
 #endif //CLIENTLAG

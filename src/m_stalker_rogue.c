@@ -662,10 +662,10 @@ void calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 		one = one - (float)sin(U);
 	//	one = ((l * FAUX_GRAVITY * (cosU * cosU)) / (velocity * velocity)) - (float)sin(U);
 		angles[0] = (float)asin(one);
-		if(_isnan(angles[0]))
+		if(isnan(angles[0]))
 			angles[2] = 1.0;
 		angles[1] = (float)PI - angles[0];
-		if(_isnan(angles[1]))
+		if(isnan(angles[1]))
 			angles[2] = 1.0;
 
 		angles[0] = RAD2DEG ( (angles[0] - U) / 2.0 );
@@ -680,10 +680,10 @@ void calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 		one = l * FAUX_GRAVITY;
 		one = one / (velocity * velocity);
 		angles[0] = (float)asin(one);
-		if(_isnan(angles[0]))
+		if(isnan(angles[0]))
 			angles[2] = 1.0;
 		angles[1] = (float)PI - angles[0];
-		if(_isnan(angles[1]))
+		if(isnan(angles[1]))
 			angles[2] = 1.0;
 
 		angles[0] = RAD2DEG ( (angles[0]) / 2.0 );
@@ -791,13 +791,13 @@ int stalker_do_pounce(edict_t *self, vec3_t dest)
 	while(velocity <= 800)
 	{
 		calcJumpAngle(self->s.origin, jumpLZ, velocity, jumpAngles);
-		if((!_isnan(jumpAngles[0]))  || (!_isnan(jumpAngles[1])))
+		if((!isnan(jumpAngles[0]))  || (!isnan(jumpAngles[1])))
 			break;
 		
 		velocity+=200;
 	};
 
-	if(!preferHighJump && (!_isnan(jumpAngles[0])) )
+	if(!preferHighJump && (!isnan(jumpAngles[0])) )
 	{
 		AngleVectors (self->s.angles, forward, right, NULL);
 		VectorNormalize ( forward ) ;
@@ -810,7 +810,7 @@ int stalker_do_pounce(edict_t *self, vec3_t dest)
 		return 1;
 	}
 
-	if(!_isnan(jumpAngles[1]))
+	if(!isnan(jumpAngles[1]))
 	{
 		AngleVectors (self->s.angles, forward, right, NULL);
 		VectorNormalize ( forward ) ;

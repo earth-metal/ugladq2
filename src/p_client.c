@@ -5,9 +5,6 @@
 #include "bl_spawn.h"
 #include "bl_main.h"
 #endif //BOT
-#ifdef OBSERVER
-#include "p_observer.h"
-#endif //OBSERVER
 
 #ifdef CLIENTLAG
 #include "p_lag.h"

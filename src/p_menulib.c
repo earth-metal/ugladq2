@@ -9,7 +9,6 @@
 
 #include "g_local.h"
 #include "bl_spawn.h"
-#include "p_observer.h"
 
 #define MAX_DISPLAYEDMENUITEMS	16
 #define MENUITEMTEXT_YOFFSET		48

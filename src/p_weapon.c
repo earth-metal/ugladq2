@@ -4,7 +4,7 @@
 #include "m_player.h"
 
 
-static qboolean	is_quad;
+qboolean	is_quad;
 static byte		is_silenced;
 
 #ifdef XATRIX

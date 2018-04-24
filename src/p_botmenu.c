@@ -11,9 +11,6 @@
 #include "bl_spawn.h"
 #include "bl_main.h"
 #include "bl_redirgi.h"
-#ifdef OBSERVER
-#include "p_observer.h"
-#endif //OBSERVER
 #include "bl_botcfg.h"
 
 #define MAX_DISPLAYEDMENUITEMS	16

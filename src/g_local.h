@@ -4,7 +4,6 @@
 #define BOT								//Gladiator Bot
 #define BOT_IMPORT					//game import redirection
 //#define BOT_DEBUG						//bot debug
-//#define OBSERVER						//observer mode
 #define TRIGGER_COUNTING			//trigger counting
 #define TRIGGER_LOG					//trigger log
 #define FUNC_BUTTON_ROTATING		//rotating button
@@ -19,12 +18,18 @@
 #define ROGUE							//Rogue mission pack 2
 //-------------------------------------------------------------
 
+#define max(X,Y)    (X > Y ? X : Y)
+#define min(X,Y)    (X < Y ? X : Y)
+
+#if defined(WIN32) || defined(_WIN32)
+ #define Q2_DLL_EXPORTED __declspec(dllexport)
+#else
+ #define Q2_DLL_EXPORTED __attribute__((__visibility__("default")))
+#endif
 
 #ifdef BOT
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
-#else
-//LINUX?
 #endif
 #endif
 

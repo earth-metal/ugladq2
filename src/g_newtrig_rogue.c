@@ -131,7 +131,7 @@ void SP_trigger_teleport(edict_t *self)
 	gi.linkentity (self);
 }
 
-#endif !defined(ZOID)
+#endif //!defined(ZOID)
 
 // ***************************
 // TRIGGER_DISGUISE

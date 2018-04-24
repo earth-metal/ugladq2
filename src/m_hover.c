@@ -779,7 +779,7 @@ void SP_monster_hover (edict_t *self)
 	self->monsterinfo.blocked = hover_blocked;		// PGM
 	if (strcmp(self->classname, "monster_daedalus") == 0)
 		self->s.skinnum = 2;
-#endif ROGUE
+#endif //ROGUE
 	gi.linkentity (self);
 
 	self->monsterinfo.currentmove = &hover_move_stand;	

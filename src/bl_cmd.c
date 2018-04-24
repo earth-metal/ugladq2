@@ -274,7 +274,7 @@ qboolean BotDebugCmd(char *cmd, edict_t *ent, int server)
 {
 	return true;
 } //end of the function BotDebugCmd
-#endif BOT_DEBUG
+#endif //BOT_DEBUG
 //===========================================================================
 //
 // Parameter:				-
