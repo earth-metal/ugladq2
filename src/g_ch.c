@@ -9,6 +9,8 @@
 
 #include "g_local.h"
 
+#ifdef CH //#endif at the end of the file
+
 #define STAT_COLOR		 30	//Colored Hitman color stat
 
 cvar_t *ch;
@@ -357,3 +359,5 @@ void InitColoredHitman(void)
 	lastnumplayers = 0;
 	gi.dprintf("ch initialized\n");
 } //end of the function InitColoredHitman
+
+#endif //CH #ifdef at start of file
