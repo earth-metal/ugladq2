@@ -55,6 +55,7 @@
 #define MID_CTF_FORCEJOIN			32
 #define MID_CTF_ARMOR_PROTECT		33
 #define MID_CTF_NO_TECH				34
+#define MID_CTF_HOOK				55
 #define MID_RA2						35
 #define MID_RA2_BOTARENA			36
 #define MID_RA2_PLAYERCYCLE		37
@@ -345,6 +346,7 @@ void MenuProc(edict_t *ent, int id)
 		case MID_CTF_FORCEJOIN: ToggleDMFlag("force join", DF_CTF_FORCEJOIN, 0, id); break;
 		case MID_CTF_ARMOR_PROTECT: ToggleDMFlag("armor protect", DF_ARMOR_PROTECT, 0, id); break;
 		case MID_CTF_NO_TECH: ToggleDMFlag("allow techs", DF_CTF_NO_TECH, 1, id); break;
+		case MID_CTF_HOOK: ToggleMenuCVarBoolean(gi.cvar("ctf_hook", "", 0), "offhand hook", id); break;
 
 		case MID_RA2_BOTARENA:
 		{
@@ -550,6 +552,7 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_FORCEJOIN, NULL, OnOffString("force join", (int) dmflags->value & DF_CTF_FORCEJOIN), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_ARMOR_PROTECT, NULL, OnOffString("armor protect", (int) dmflags->value & DF_ARMOR_PROTECT), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_NO_TECH, NULL, OnOffString("allow techs", !((int) dmflags->value & DF_CTF_NO_TECH)), NULL);
+	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_HOOK, NULL, OnOffString("offhand hook", (int) (gi.cvar("ctf_hook", "1", 0))->value), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_HEALTH, NULL, OnOffString("allow health", !((int) dmflags->value & DF_NO_HEALTH)), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ITEMS, NULL, OnOffString("allow powerups", !((int) dmflags->value & DF_NO_ITEMS)), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ARMOR, NULL, OnOffString("allow armor", !((int) dmflags->value & DF_NO_ARMOR)), NULL);

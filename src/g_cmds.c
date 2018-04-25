@@ -1448,12 +1448,13 @@ void ClientCommand (edict_t *ent)
 #ifdef CTF_HOOK
 	else if (ctf->value && Q_stricmp(cmd, "hookon") == 0)
 	{
-		ent->client->ctf_hookstate = CTF_HOOK_STATE_ON;
+		if (ctf_hook->value)
+			ent->client->ctf_hookstate = CTF_HOOK_STATE_ON;
 	} //end else if
 	else if (ctf->value && Q_stricmp(cmd, "hookoff") == 0)
 	{
-		if (ent->client->ctf_hookstate & CTF_HOOK_STATE_ON)
-				ent->client->ctf_hookstate |= CTF_HOOK_STATE_TURNOFF;
+		if (ctf_hook->value && ent->client->ctf_hookstate & CTF_HOOK_STATE_ON)
+			ent->client->ctf_hookstate |= CTF_HOOK_STATE_TURNOFF;
 	} //end else if
 #endif //CTF_HOOK
 	else

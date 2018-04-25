@@ -745,6 +745,9 @@ extern	cvar_t	*timelimit;
 #ifdef ZOID
 extern	cvar_t	*capturelimit;
 #endif //ZOID
+#ifdef CTF_HOOK
+extern  cvar_t  *ctf_hook;
+#endif //CTF_HOOK
 extern	cvar_t	*password;
 extern	cvar_t	*spectator_password;
 extern	cvar_t	*needpass;

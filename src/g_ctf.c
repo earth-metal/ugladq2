@@ -15,6 +15,9 @@ qboolean techspawn = false;
 
 cvar_t *ctf;
 cvar_t *ctf_forcejoin;
+#ifdef CTF_HOOK
+cvar_t *ctf_hook;
+#endif
 
 char *ctf_statusbar =
 "yb	-24 "
@@ -257,6 +260,9 @@ void CTFInit(void)
 {
 	ctf = gi.cvar("ctf", "0", CVAR_SERVERINFO);
 	ctf_forcejoin = gi.cvar("ctf_forcejoin", "", 0);
+#ifdef CTF_HOOK
+        ctf_hook = gi.cvar("ctf_hook", "1", 0);
+#endif
 
 	if (!flag1_item)
 		flag1_item = FindItemByClassname("item_flag_team1");

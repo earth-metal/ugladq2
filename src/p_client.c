@@ -2546,7 +2546,7 @@ void ClientThink(edict_t *ent, usercmd_t *ucmd)
 		}
 
 #ifdef CTF_HOOK
-		if (client->ctf_hookstate & CTF_HOOK_STATE_ON) CTFHook_Fire(ent);
+		if (ctf_hook->value && client->ctf_hookstate & CTF_HOOK_STATE_ON) CTFHook_Fire(ent);
 #endif //CTF_HOOK
 #ifdef ZOID
 		if (client->ctf_grapple) CTFGrapplePull(client->ctf_grapple);
