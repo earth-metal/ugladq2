@@ -412,17 +412,18 @@ void CheckDMRules (void)
 		}
 	}
 
+#ifdef ZOID
+	if (ctf->value)
+	{
+		if (CTFCheckRules())
+		{
+			EndDMLevel ();
+		}
+	}
+#endif //ZOID
+
 	if (fraglimit->value)
 	{
-#ifdef ZOID
-		if (ctf->value)
-		{
-			if (CTFCheckRules())
-			{
-				EndDMLevel ();
-			}
-		}
-#endif //ZOID
 		for (i = 0; i < maxclients->value; i++)
 		{
 			cl = game.clients + i;
