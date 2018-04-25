@@ -919,7 +919,7 @@ int BotInitLibrary(bot_library_t *lib)
 	lib->funcs.BotLibVarSet("rogue", rogue->string);
 #endif //ROGUE
 	//log file
-	cvar = gi.cvar("log", "1", 0);
+	cvar = gi.cvar("log", "", 0);
 	lib->funcs.BotLibVarSet("log", cvar->string);
 	//no chatting
 	cvar = gi.cvar("nochat", "", 0);
