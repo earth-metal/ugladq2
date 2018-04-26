@@ -823,59 +823,31 @@ void RA2_StartMatch(int context)
 	edict_t *e;
 
 	gi.dprintf("Starting match in %s\n", RA2_GetArenaName(context));
-	//if bot cycling is on
 	if (ra_botcycle->value)
 	{
+		//add the winner(s) if human, or the first human(s) in line
 		e = RA2_GetLongestWaitingHuman(context);
-		if (e)
-		{
-			//if there is/are winner(s)
-			RA2_AddPlayersOnSameTeamToMatch(context, e);
-		} //end if
-		else
-		{
-			//there are no winners so add the longest waiting player/team
-			e = RA2_GetLongestWaiting(context);
-			if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-		} //end else
-		//add the second player/team
-		e = RA2_GetLongestWaiting(context);
-		if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-	} //end if
-	//if player cycling is on
-	else if (ra_playercycle->value)
+	}
+	else
 	{
 		//add the winner(s) from the previous match
 		e = RA2_GetArenaWinner(context);
-		if (e)
-		{
-			//if there is/are winner(s)
-			RA2_AddPlayersOnSameTeamToMatch(context, e);
-		} //end if
-		else
-		{
-			//there are no winners so add the longest waiting player/team
-			e = RA2_GetLongestWaiting(context);
-			if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-		} //end else
-		//add the second player/team
+	}
+
+	if (e)
+	{
+		//if there is/are winner(s)
+		RA2_AddPlayersOnSameTeamToMatch(context, e);
+	} //end if
+	else
+	{
+		//there are no winners so add the longest waiting player/team
 		e = RA2_GetLongestWaiting(context);
 		if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-	} //end if
-	else //no player cycling just add everyone to the match
-	{
-		for (i = 0; i < maxclients->value; i++)
-		{
-			e = g_edicts + 1 + i;
-			if(e->inuse && e->client && e->client->resp.context == context)
-			{
-				e->takedamage = DAMAGE_AIM;
-				e->flags &= ~FL_NOTARGET;
-				RA2_GiveAmmo(e);
-				RA2_MoveToArena(e, e->client->resp.context, false);
-			} //end if
-		} //end for
 	} //end else
+	//add the second player/team
+	e = RA2_GetLongestWaiting(context);
+	if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
 } //end of the function RA2_StartMatch
 //===========================================================================
 //
