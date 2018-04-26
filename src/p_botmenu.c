@@ -186,7 +186,7 @@ void ToggleMenuCVarBoolean(cvar_t *cvar, char *name, int id)
 
 	cvar->value = !cvar->value;
 	sprintf(buf, "%d", (int)cvar->value);
-	gi.cvar_set(name, buf);
+	gi.cvar_set(cvar->name, buf);
 	ChangeMenuItemName(mainmenu, id, OnOffString(name, (int) cvar->value));
 } //end of the function ToggleMenuCVarBoolean
 //========================================================================
@@ -346,7 +346,7 @@ void MenuProc(edict_t *ent, int id)
 		case MID_CTF_FORCEJOIN: ToggleDMFlag("force join", DF_CTF_FORCEJOIN, 0, id); break;
 		case MID_CTF_ARMOR_PROTECT: ToggleDMFlag("armor protect", DF_ARMOR_PROTECT, 0, id); break;
 		case MID_CTF_NO_TECH: ToggleDMFlag("allow techs", DF_CTF_NO_TECH, 1, id); break;
-		case MID_CTF_HOOK: ToggleMenuCVarBoolean(gi.cvar("ctf_hook", "", 0), "offhand hook", id); break;
+		case MID_CTF_HOOK: ToggleMenuCVarBoolean(gi.cvar("ctf_hook", "", 0), "offhand hook", id); BotLib_BotLibVarSet("usehook", ctf_hook->string); break;
 
 		case MID_RA2_BOTARENA:
 		{

@@ -902,7 +902,7 @@ int BotInitLibrary(bot_library_t *lib)
 	lib->funcs.BotLibVarSet("ctf", ctf->string);
 	if (ctf->value)
 	{
-		lib->funcs.BotLibVarSet("usehook", "1");
+		lib->funcs.BotLibVarSet("usehook", ctf_hook->string);
 		lib->funcs.BotLibVarSet("runes", "1");
 	} //end if
 #endif //ZOID
