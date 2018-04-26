@@ -1448,7 +1448,7 @@ void ClientCommand (edict_t *ent)
 #ifdef CTF_HOOK
 	else if (ctf->value && Q_stricmp(cmd, "hookon") == 0)
 	{
-		if (ctf_hook->value)
+		if (ctf_hook->value && ent->solid != SOLID_NOT)
 			ent->client->ctf_hookstate = CTF_HOOK_STATE_ON;
 	} //end else if
 	else if (ctf->value && Q_stricmp(cmd, "hookoff") == 0)
