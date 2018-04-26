@@ -238,6 +238,22 @@ void SetObserverMode(edict_t *ent, observer_mode_t omode)
 		} //end case
 	} //end switch
 } //end of the function SetObserverMode
+
+int CountSpawnPoints(char *classn, int arena)
+{
+	edict_t	*spot;
+	int		count = 0;
+	
+	spot = NULL;
+	while ((spot = G_Find (spot, FOFS(classname), classn)) != NULL)
+	{
+		if (spot->arena != arena && idmap==false) continue;
+		count++;
+	}
+	
+	return count;
+} //end of the function CountSpawnPoints
+
 //===========================================================================
 //
 // Parameter:				-
@@ -247,17 +263,12 @@ void SetObserverMode(edict_t *ent, observer_mode_t omode)
 edict_t *SelectRandomArenaSpawnPoint (char *classn, int arena)
 {
 	edict_t	*spot;
-	int		count = 0;
+	int		count;
 	int		selection;
 	
-	spot = NULL;
-	while ((spot = G_Find (spot, FOFS(classname), classn)) != NULL)
-	{
-		if (spot->arena != arena && idmap==false) continue;
-		count++;
-	}
+	count = CountSpawnPoints(classn, arena);
 	
-	if (!count)
+	if (count < 1)
 		return NULL;
 	
 	selection = rand() % count;
@@ -285,7 +296,6 @@ edict_t *SelectFarthestArenaSpawnPoint(char *classn, int arena)
 	edict_t	*bestspot;
 	float	bestdistance, bestplayerdistance;
 	edict_t	*spot;
-	int		count = 0;
 	
 	
 	spot = NULL;
@@ -304,15 +314,21 @@ edict_t *SelectFarthestArenaSpawnPoint(char *classn, int arena)
 		}
 	}
 	
-	if (bestspot)
+	return bestspot;
+} //end of the function SelectFarthestArenaSpawnPoint
+
+edict_t *GetNextObserverSpawnPoint(int arena)
+{
+	edict_t *dest = NULL;
+
+	if (!(dest = SelectFarthestArenaSpawnPoint ("misc_teleporter_dest", arena)))
 	{
-		return bestspot;
+		dest = SelectRandomArenaSpawnPoint ("info_player_deathmatch", arena);
 	} //end if
 	
-	// if there is a player just spawned on each and every start spot
-	// we have no choice to turn one into a telefrag meltdown
-	return SelectRandomArenaSpawnPoint (classn, arena);
-} //end of the function SelectFarthestArenaSpawnPoint
+	return dest;
+} //end of the function GetNextObserverSpawnPoint
+
 //===========================================================================
 //
 // Parameter:				-
@@ -328,43 +344,16 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	
 	if (observer)
 	{
-		if (!(dest = SelectFarthestArenaSpawnPoint ("misc_teleporter_dest", arena)))
-		{
-			dest = SelectFarthestArenaSpawnPoint ("info_player_deathmatch", arena);
-		} //end if
-		if (arena)
-		{
-			if (ent->client->resp.context == 0)
-			{
-				ent->client->resp.context = arena;
-			} //end if
-		} //end if
-		else
-		{
-			//gi.centerprintf(ent, "use \'toarena x\' to enter an arena");
-			//else it is the first time
-			{	
-				//show_arena_menu(ent); 
-			}
-		} //end else
-		ent->client->resp.context = arena;
-	} //end if
-	else
-	{
-		//get rid of all menus
-		ent->client->resp.context = arena;
-		dest = SelectFarthestArenaSpawnPoint ("info_player_deathmatch", arena);
-		gi.dprintf("%s entered arena %d\n", ent->client->pers.netname, arena);
-	} //end else
+		dest = GetNextObserverSpawnPoint(arena);
 	
-	if (!dest)
-	{
-		gi.cprintf(ent, PRINT_HIGH, "arena not found\n");
-		return;
-	} //end if
+		if (!dest)
+		{
+			gi.cprintf(ent, PRINT_HIGH, "arena not found\n");
+			return;
+		} //end if
 
-	if (observer)
-	{
+		ent->client->resp.context = arena;
+
 		if (arena)
 		{
 			gi.dprintf("%s moved to arena %d as observer\n", ent->client->pers.netname, arena);
@@ -375,6 +364,19 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 			RA2OpenArenaMenu(ent);
 		} //end else
 	} //end if
+	else
+	{
+		dest = SelectFarthestArenaSpawnPoint ("info_player_deathmatch", arena);
+
+		if (!dest)
+		{
+			RA2_MoveToArena(ent, arena, true);
+			return;
+		} //end if
+
+		ent->client->resp.context = arena;
+		gi.dprintf("%s entered arena %d\n", ent->client->pers.netname, arena);
+	} //end else
 
 	gi.unlinkentity(ent);
 	//
@@ -792,6 +794,8 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 {
 	int i;
 	edict_t *e;
+	int same_team_already_in_arena = 0;
+	int arena_capacity = CountSpawnPoints("info_player_deathmatch", arena);
 
 	for (i = 0; i < maxclients->value; i++)
 	{
@@ -803,11 +807,19 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 		{
 			//invalidate the time
 			e->client->ra_time = -1;
-			//
-			e->takedamage = DAMAGE_AIM;
-			e->flags &= ~FL_NOTARGET;
-			RA2_GiveAmmo(e);
-			RA2_MoveToArena(e, e->client->resp.context, false);
+			//check if the arena can hold the player
+			if (same_team_already_in_arena < arena_capacity/2)
+			{
+				e->takedamage = DAMAGE_AIM;
+				e->flags &= ~FL_NOTARGET;
+				RA2_GiveAmmo(e);
+				same_team_already_in_arena++;
+				RA2_MoveToArena(e, e->client->resp.context, false);
+			}
+			else
+			{
+				gi.centerprintf(e, "Your team is too large\n");
+			}
 		} //end if
 	} //end for
 } //end of the function RA2_AddPlayersOnSameTeamToMatch
