@@ -58,7 +58,6 @@
 #define MID_CTF_HOOK				55
 #define MID_RA2						35
 #define MID_RA2_BOTARENA			36
-#define MID_RA2_PLAYERCYCLE		37
 #define MID_RA2_BOTCYCLE			38
 #define MID_RA2_SELFDAMAGE			39
 #define MID_RA2_HEALTHPROTECT		40
@@ -359,7 +358,6 @@ void MenuProc(edict_t *ent, int id)
 			ChangeMenuItemName(mainmenu, MID_RA2_BOTARENA, buf);
 			break;
 		} //end case
-		case MID_RA2_PLAYERCYCLE: ToggleMenuCVarBoolean(gi.cvar("ra_playercycle", "", 0), "player cycle", id); break;
 		case MID_RA2_BOTCYCLE: ToggleMenuCVarBoolean(gi.cvar("ra_botcycle", "", 0), "bot cycle", id); break;
 		case MID_RA2_SELFDAMAGE: ToggleMenuCVarBoolean(gi.cvar("selfdamage", "", 0), "self damage", id); break;
 		case MID_RA2_HEALTHPROTECT: ToggleMenuCVarBoolean(gi.cvar("healthprotect", "", 0), "health protect", id); break;
@@ -574,7 +572,6 @@ void CreateBotMenu(void)
 	sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_PLAYERCYCLE, NULL, OnOffString("player cycle", (int) (gi.cvar("ra_playercycle", "1", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTCYCLE, NULL, OnOffString("bot cycle", (int) (gi.cvar("ra_botcycle", "1", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SELFDAMAGE, NULL, OnOffString("self damage", (int) (gi.cvar("selfdamage", "1", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_HEALTHPROTECT, NULL, OnOffString("health protect", (int) (gi.cvar("healthprotect", "0", 0))->value), NULL);

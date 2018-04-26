@@ -289,7 +289,6 @@ void InitGame (void)
 	selfdamage = gi.cvar("selfdamage", "1", 0);
 	healthprotect = gi.cvar("healthprotect", "0", 0);
 	armorprotect = gi.cvar("armorprotect", "0", 0);
-	ra_playercycle = gi.cvar("ra_playercycle", "0", 0);
 	ra_botcycle = gi.cvar("ra_botcycle", "0", 0);
 #endif //ROCKETARENA
 #ifdef CH

@@ -41,5 +41,4 @@ extern cvar_t *arena;
 extern cvar_t *selfdamage;
 extern cvar_t *healthprotect;
 extern cvar_t *armorprotect;
-extern cvar_t *ra_playercycle;
 extern cvar_t *ra_botcycle;
