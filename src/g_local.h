@@ -17,6 +17,8 @@
 #define ROGUE							//Rogue mission pack 2
 //-------------------------------------------------------------
 
+#define UGLADQ2_VERSION			"0.97u"
+
 #define max(X,Y)    (X > Y ? X : Y)
 #define min(X,Y)    (X < Y ? X : Y)
 
