@@ -195,6 +195,10 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	total = 0;
 	for (i=0 ; i<game.maxclients ; i++)
 	{
+#ifdef ROCKETARENA
+		if (ra->value && ent->client->resp.context != game.clients[i].resp.context)
+			continue;
+#endif //ROCKETARENA
 		cl_ent = g_edicts + 1 + i;
 		if (!cl_ent->inuse || game.clients[i].resp.spectator)
 			continue;
