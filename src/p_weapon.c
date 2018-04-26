@@ -534,6 +534,10 @@ A generic function to handle the basics of weapon thinking
 void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent))
 {
 	int		n;
+#ifdef ROCKETARENA
+	cvar_t	*ra				= gi.cvar("rocketarena", "0", 0);
+	cvar_t	*ra_fastswitch	= gi.cvar("ra_fastswitch", "0", 0);
+#endif //ROCKETARENA
 
 	if(ent->deadflag || ent->s.modelindex != 255) // VWep animations screw up corpses
 	{
@@ -569,7 +573,11 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 
 	if (ent->client->weaponstate == WEAPON_ACTIVATING)
 	{
-		if (ent->client->ps.gunframe == FRAME_ACTIVATE_LAST)
+		if (ent->client->ps.gunframe == FRAME_ACTIVATE_LAST
+#ifdef ROCKETARENA
+				|| (ra->value && ra_fastswitch->value)
+#endif //ROCKETARENA
+		)
 		{
 			ent->client->weaponstate = WEAPON_READY;
 			ent->client->ps.gunframe = FRAME_IDLE_FIRST;
@@ -583,7 +591,12 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 	if ((ent->client->newweapon) && (ent->client->weaponstate != WEAPON_FIRING))
 	{
 		ent->client->weaponstate = WEAPON_DROPPING;
-		ent->client->ps.gunframe = FRAME_DEACTIVATE_FIRST;
+#ifdef ROCKETARENA
+		if (ra->value && ra_fastswitch->value)
+			ent->client->ps.gunframe = FRAME_DEACTIVATE_LAST;
+		else
+#endif //ROCKETARENA
+			ent->client->ps.gunframe = FRAME_DEACTIVATE_FIRST;
 
 		if ((FRAME_DEACTIVATE_LAST - FRAME_DEACTIVATE_FIRST) < 4)
 		{

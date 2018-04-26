@@ -42,3 +42,4 @@ extern cvar_t *selfdamage;
 extern cvar_t *healthprotect;
 extern cvar_t *armorprotect;
 extern cvar_t *ra_botcycle;
+extern cvar_t *ra_fastswitch;

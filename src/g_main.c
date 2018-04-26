@@ -82,6 +82,7 @@ cvar_t	*selfdamage;
 cvar_t	*healthprotect;
 cvar_t	*armorprotect;
 cvar_t	*ra_botcycle;
+cvar_t	*ra_fastswitch;
 #endif //ROCKETARENA
 
 #ifdef AQ2
