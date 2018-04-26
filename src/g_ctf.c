@@ -2562,7 +2562,7 @@ pmenu_t creditsmenu[] = {
 
 
 pmenu_t joinmenu[] = {
-	{ "*Quake II",			PMENU_ALIGN_CENTER, NULL, NULL },
+	{ "*Quake II - Gladiator Bot",		PMENU_ALIGN_CENTER, NULL, NULL },
 	{ "*ThreeWave Capture the Flag",	PMENU_ALIGN_CENTER, NULL, NULL },
 	{ NULL,					PMENU_ALIGN_CENTER, NULL, NULL },
 	{ NULL,					PMENU_ALIGN_CENTER, NULL, NULL },
@@ -2578,7 +2578,7 @@ pmenu_t joinmenu[] = {
 	{ "ESC to Exit Menu",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ "(TAB to Return)",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, NULL },
-	{ "v" CTF_STRING_VERSION,	PMENU_ALIGN_RIGHT, NULL, NULL },
+	{ "*v" UGLADQ2_VERSION,	PMENU_ALIGN_RIGHT, NULL, NULL },
 };
 
 int CTFUpdateJoinMenu(edict_t *ent)
