@@ -5,6 +5,8 @@
 // For non-commercial use only
 
 #include "g_local.h"
+
+#ifdef ROCKETARENA //#endif at the end of the file
 #include "bl_spawn.h"
 
 extern float PlayersRangeFromSpot (edict_t *spot);
@@ -25,6 +27,90 @@ int weapon_vals_x[] = { 256, 1, 2, 4, 8, 16, 128, 64, 32 };
 	gi.WriteString (s);
 	gi.unicast (e, true);
 }*/
+
+void RA2JoinArena(edict_t *ent, int arena)
+{
+	PMenu_Close(ent);
+	RA2_MoveToArena(ent, arena, true);
+}
+
+void RA2JoinArena1(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 1);
+}
+
+void RA2JoinArena2(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 2);
+}
+
+void RA2JoinArena3(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 3);
+}
+
+void RA2JoinArena4(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 4);
+}
+
+void RA2JoinArena5(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 5);
+}
+
+void RA2JoinArena6(edict_t *ent, pmenu_t *p)
+
+{
+	RA2JoinArena(ent, 6);
+}
+
+void RA2JoinArena7(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 7);
+}
+
+void RA2JoinArena8(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 8);
+}
+
+void RA2JoinArena9(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 9);
+}
+
+void RA2JoinArena10(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 10);
+}
+
+pmenu_t arena_menu[] = {
+	{ "*Quake 2 - Gladiator Bot",		PMENU_ALIGN_CENTER, NULL, NULL },
+	{ "*Rocket Arena 2 - Arena List",	PMENU_ALIGN_CENTER, NULL, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena1 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena2 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena3 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena4 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena5 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena6 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena7 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena8 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena9 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena10 },
+	{ "Use [ and ] to move cursor",	PMENU_ALIGN_LEFT, NULL, NULL },
+	{ "ENTER to select",	PMENU_ALIGN_LEFT, NULL, NULL },
+	{ "ESC to Exit Menu",	PMENU_ALIGN_LEFT, NULL, NULL },
+	{ "(TAB to Return)",	PMENU_ALIGN_LEFT, NULL, NULL },
+	{ "*v" UGLADQ2_VERSION,	PMENU_ALIGN_RIGHT, NULL, NULL }
+};
+
+void RA2OpenArenaMenu(edict_t *ent)
+{
+	PMenu_Open(ent, arena_menu, -1, sizeof(arena_menu) / sizeof(pmenu_t));
+}
+
 //===========================================================================
 //
 // Parameter:				-
@@ -286,7 +372,7 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 		} //end if
 		else
 		{
-			gi.centerprintf(ent, "moved to the observer room");
+			RA2OpenArenaMenu(ent);
 		} //end else
 	} //end if
 
@@ -433,6 +519,21 @@ void RA2_Init(edict_t *wsent)
 	{
 		idmap = false;
 	} //end else
+
+    int i, j;
+	for (i=1, j=3; i<=10; i++)
+    {
+		if (i <= num_arenas)
+		{
+			arena_menu[j].text = RA2_GetArenaName(i);
+		}
+		else
+		{
+			arena_menu[j].SelectFunc = NULL;
+		}
+
+		j++;
+	}
 } //end of the function RA2_Init
 //===========================================================================
 //
@@ -1067,3 +1168,4 @@ void RA2_CheckRules(void)
 		Cmd_stop_match_f(NULL, context, 3);
 	} //end for
 } //end of the function RA2_CheckRules
+#endif //ROCKETARENA #ifdef at start of file

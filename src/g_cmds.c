@@ -77,14 +77,14 @@ void SelectNextItem (edict_t *ent, int itflags)
 
 	cl = ent->client;
 
-#ifdef ZOID
-	if (ctf->value && cl->menu)
+#if defined(ZOID) || defined(ROCKETARENA)
+	if ((ctf->value || ra->value) && cl->menu)
 	{
 		PMenu_Next(ent);
 		return;
 	} //end if
 	else
-#endif //ZOID
+#endif //ZOID or ROCKETARENA
 		if (cl->chase_target)
 	{
 		ChaseNext(ent);
@@ -118,14 +118,14 @@ void SelectPrevItem (edict_t *ent, int itflags)
 
 	cl = ent->client;
 
-#ifdef ZOID
-	if (ctf->value && cl->menu)
+#if defined(ZOID) || defined(ROCKETARENA)
+	if ((ctf->value || ra->value) && cl->menu)
 	{
 		PMenu_Prev(ent);
 		return;
 	} //end if
 	else
-#endif //ZOID
+#endif //ZOID or ROCKETARENA
 		if (cl->chase_target)
 	{
 		ChasePrev(ent);
@@ -631,17 +631,15 @@ void Cmd_Inven_f (edict_t *ent)
 	cl->showscores = false;
 	cl->showhelp = false;
 
-#ifdef ZOID
-	if (ctf->value)
+#if defined(ZOID) || defined(ROCKETARENA)
+	if ((ctf->value || ra->value) && ent->client->menu)
 	{
-		if (ent->client->menu)
-		{
-			PMenu_Close(ent);
+		PMenu_Close(ent);
+		if (ctf->value)
 			ent->client->update_chase = true;
-			return;
-		}
+		return;
 	} //end if
-#endif //ZOID
+#endif //ZOID or ROCKETARENA
 #ifdef BOT
 	if (ent->client->showmenu)
 	{
@@ -666,6 +664,14 @@ void Cmd_Inven_f (edict_t *ent)
 	} //end if
 #endif //ZOID
 
+#ifdef ROCKETARENA
+	if (ra->value)
+	{
+		RA2OpenArenaMenu(ent);
+		return;
+	} //end if
+#endif //ROCKETARENA
+
 	cl->showinventory = true;
 
 	gi.WriteByte (svc_inventory);
@@ -685,16 +691,13 @@ void Cmd_InvUse_f (edict_t *ent)
 {
 	gitem_t		*it;
 
-#ifdef ZOID
-	if (ctf->value)
+#if defined(ZOID) || defined(ROCKETARENA)
+	if ((ctf->value || ra->value) && ent->client->menu)
 	{
-		if (ent->client->menu)
-		{
-			PMenu_Select(ent);
-			return;
-		}
+		PMenu_Select(ent);
+		return;
 	} //end if
-#endif //ZOID
+#endif //ZOID or ROCKETARENA
 
 	ValidateSelectedItem (ent);
 
@@ -921,13 +924,13 @@ void Cmd_PutAway_f (edict_t *ent)
 	ent->client->showscores = false;
 	ent->client->showhelp = false;
 	ent->client->showinventory = false;
-#ifdef ZOID
-	if (ctf->value)
+#if defined(ZOID) || defined(ROCKETARENA)
+	if (ctf->value || ra->value)
 	{
 		if (ent->client->menu) PMenu_Close(ent);
-		ent->client->update_chase = true;
+		if (ctf->value) ent->client->update_chase = true;
 	} //end if
-#endif //ZOID
+#endif //ZOID or ROCKETARENA
 #ifdef BOT
 	if (ent->client->showmenu)
 	{
