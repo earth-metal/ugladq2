@@ -393,7 +393,6 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	ent->flags &= ~FL_OBSERVER;
 #endif //OBSERVER
 	ent->solid = SOLID_BBOX;
-	ent->takedamage = DAMAGE_AIM;
 	ent->movetype = MOVETYPE_WALK;
 	// clear entity state values
 	ent->s.effects = 0;
@@ -810,7 +809,6 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 			//check if the arena can hold the player
 			if (same_team_already_in_arena < arena_capacity/2)
 			{
-				e->takedamage = DAMAGE_AIM;
 				e->flags &= ~FL_NOTARGET;
 				RA2_GiveAmmo(e);
 				same_team_already_in_arena++;
@@ -823,6 +821,48 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 		} //end if
 	} //end for
 } //end of the function RA2_AddPlayersOnSameTeamToMatch
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void RA2_StartMatch_think(edict_t *ent)
+{
+	char buf[256];
+	int i;
+	edict_t *e;
+
+	if (ent->count <= 0)
+	{
+		RA2_ArenaCenterPrint("FIGHT!", ent->style);
+		RA2_ArenaSound("ra/sffight.wav", ent->style);
+		//find players in the arena...
+		for (i = 0; i < maxclients->value; i++)
+		{
+			e = g_edicts + 1 + i;
+			if (!e->inuse) continue;
+			if (!e->client) continue;
+			if (e->client->resp.context != ent->style) continue;
+			if (e->flags & FL_NOTARGET) continue;
+			//...and enable their weapons
+			e->takedamage = DAMAGE_AIM;
+		} //end for
+
+		G_FreeEdict(ent);
+		return;
+	} //end if
+
+	sprintf(buf, "%d", ent->count);
+	RA2_ArenaCenterPrint(buf, ent->style);
+	if (ent->count <= 3)
+	{
+		sprintf(buf, "ra/sf%d.wav", ent->count);
+		RA2_ArenaSound(buf, ent->style);
+	}
+	ent->count--;
+	ent->nextthink = level.time + 1;
+} //end of the function RA2_StartMatch_think
 //===========================================================================
 //
 // Parameter:				-
@@ -860,38 +900,21 @@ void RA2_StartMatch(int context)
 	//add the second player/team
 	e = RA2_GetLongestWaiting(context);
 	if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-} //end of the function RA2_StartMatch
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
-void RA2_StartMatch_think(edict_t *ent)
-{
-	char buf[256];
 
-	if (ent->count <= 0)
+	//start countdown
+	e = G_Find(NULL, FOFS(classname), "arenacountdown");
+	while(e)
 	{
-		RA2_ArenaCenterPrint("FIGHT!", ent->style);
-		RA2_ArenaSound("ra/sffight.wav", ent->style);
-	} //end if
-	else
-	{
-		sprintf(buf, "%d", ent->count);
-		RA2_ArenaCenterPrint(buf, ent->style);
-		sprintf(buf, "ra/sf%d.wav", ent->count);
-		RA2_ArenaSound(buf, ent->style);
-	} //end else
-	if (ent->count <= 0)
-	{
-		RA2_StartMatch(ent->style);
-		G_FreeEdict(ent);
-		return;
-	} //end if
-	ent->count--;
-	ent->nextthink = level.time + 1;
-} //end of the function RA2_StartMatch_think
+		if (e->style == context) return;
+		e = G_Find(e, FOFS(classname), "arenacountdown");
+	} //end while
+	e = G_Spawn();
+	e->classname = "arenacountdown";
+	e->style = context;
+	e->count = 5;
+	e->think = RA2_StartMatch_think;
+	e->nextthink = level.time + 1;
+} //end of the function RA2_StartMatch
 //===========================================================================
 //
 // Parameter:				-
@@ -914,18 +937,8 @@ void Cmd_start_match_f(edict_t *ent, int context)
 		else gi.dprintf("the arena number must be in the range [1, %d]\n", num_arenas);
 		return;
 	} //end if
-	e = G_Find(NULL, FOFS(classname), "arenacountdown");
-	while(e)
-	{
-		if (e->style == context) return;
-		e = G_Find(e, FOFS(classname), "arenacountdown");
-	} //end while
-	e = G_Spawn();
-	e->classname = "arenacountdown";
-	e->style = context;
-	e->count = 3;
-	e->think = RA2_StartMatch_think;
-	e->nextthink = level.time + 1;
+
+	RA2_StartMatch(context);
 } //end of the function Cmd_start_match_f
 //===========================================================================
 //
