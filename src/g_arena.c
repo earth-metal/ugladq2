@@ -521,9 +521,9 @@ void RA2_Init(edict_t *wsent)
 		idmap = false;
 	} //end else
 
-    int i, j;
+	int i, j;
 	for (i=1, j=3; i<=10; i++)
-    {
+	{
 		if (i <= num_arenas)
 		{
 			arena_menu[j].text = RA2_GetArenaName(i);
@@ -848,8 +848,8 @@ void RA2_StartMatch_think(edict_t *ent)
 			//...and enable their weapons
 			e->takedamage = DAMAGE_AIM;
 		} //end for
-
-		G_FreeEdict(ent);
+		//mark the match as active
+		ent->nextthink = 0;
 		return;
 	} //end if
 
@@ -873,6 +873,14 @@ void RA2_StartMatch(int context)
 {
 	int i;
 	edict_t *e;
+
+	//check for an active match in this arena
+	e = G_Find(NULL, FOFS(classname), "arenacountdown");
+	while(e)
+	{
+		if (e->style == context) return;
+		e = G_Find(e, FOFS(classname), "arenacountdown");
+	} //end while
 
 	gi.dprintf("Starting match in %s\n", RA2_GetArenaName(context));
 	if (ra_botcycle->value)
@@ -902,12 +910,6 @@ void RA2_StartMatch(int context)
 	if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
 
 	//start countdown
-	e = G_Find(NULL, FOFS(classname), "arenacountdown");
-	while(e)
-	{
-		if (e->style == context) return;
-		e = G_Find(e, FOFS(classname), "arenacountdown");
-	} //end while
 	e = G_Spawn();
 	e->classname = "arenacountdown";
 	e->style = context;
@@ -951,6 +953,17 @@ void RA2_StopMatch(int context)
 	int i;
 	edict_t *e;
 
+	//mark the match as completed
+	e = G_Find(NULL, FOFS(classname), "arenacountdown");
+	while(e)
+	{
+		if (e->style == context)
+		{
+			G_FreeEdict(e);
+			break;
+		}
+		e = G_Find(e, FOFS(classname), "arenacountdown");
+	} //end while
 	//respawn all the players
 	for (i = 0; i < maxclients->value; i++)
 	{
@@ -1108,7 +1121,7 @@ void RA2_CheckRules(void)
 		e = G_Find(NULL, FOFS(classname), "arenacountdown");
 		while(e)
 		{
-			if (e->style == context) break;
+			if (e->style == context && e->nextthink) break;
 			e = G_Find(e, FOFS(classname), "arenacountdown");
 		} //end while
 		if (e) continue;
