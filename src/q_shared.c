@@ -326,7 +326,6 @@ BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 ==================
 */
-// Alkaline 4/18/18: Added C_ONLY check
 #if !id386 || defined __linux__ || defined C_ONLY
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
