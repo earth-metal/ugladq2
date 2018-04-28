@@ -1075,7 +1075,7 @@ void RA2_CheckRules(void)
 			//another player in this arena
 			numarenaplayers++;
 			//if the player is observing
-			if (e->takedamage == DAMAGE_NO) continue;
+			if (e->flags & FL_NOTARGET) continue;
 			//if the player is dead
 			if (e->health <= 0 || e->deadflag == DEAD_DEAD) continue;
 			//this player is still living in the arena
