@@ -1,3 +1,18 @@
+v0.97u
+--------------
+- Don't print message "extended delayed ucmd heap" during game init.
+- Disable logging to "botlib.log" file by default.
+- CTF: Optional disabling of the offhand hook, see README.md.
+- CTF: Prevent observers from firing the offhand hook.
+- CTF: Make "capturelimit" variable work when "fraglimit" isn't set.
+- RA2: Arena menu shown on connection or at-will with the "inven" command.
+- RA2: Scoreboard shows only players in the current arena.
+- RA2: Prevent spawning of more than 2 teams into an arena.
+- RA2: Prevent spawning of too many players into an arena.
+- RA2: Change countdown to last for 5 seconds after the arena is populated.
+- RA2: Optional enabling of fast weapon switching, see README.md.
+- RA2: Ignore attempts to start a match in arenas where one is already active.
+
 v0.96u
 --------------
 - Updated for compilation with GCC

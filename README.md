@@ -1,11 +1,18 @@
 # uGladQ2
-MrElusive's Gladiator Bot is the most advanced non-human deathmatch opponent ("bot") available for Quake 2.  (The Quake 3: Arena bot is the direct successor of the Gladiator Bot.)  The source code for the Quake 2 version of the bot was never released, however the source for the deathmatch games they can play was made available.
+MrElusive's Gladiator Bot is the most realistic non-human deathmatch opponent ("bot") available for Quake 2.  (The Quake 3: Arena bot is the direct successor of the Gladiator Bot.)  The source code for the Quake 2 version of the bot was never released, however the source for the game-types they can play was made available.
 
-This is an unofficial effort to clean up the rough edges in the game source for the original Gladiator Bot, making the available Deathmatch types (particularly Capture the Flag and Rocket Arena) more polished.
+This is an Unofficial effort to clean up the rough edges in the game source for the original Gladiator Bot, making the available Deathmatch types (particularly "Capture the Flag" and "Rocket Arena") more polished.
+
+Compatibility
+---------------
+While this game source will probably build with GCC on virtually any architecture type, compiled versions of the proprietary Gladiator Bot library are only available for 32-bit Windows and Linux systems.  Compatibility has been verified running Quake 2 v3.24 ("The Unofficial Patch") in Windows XP.
+
+Compatibility for Win32 applications is supported in Windows 10, so users should be able to run the uGladQ2 DLL and play against bots using a 32-bit Quake 2 engine such as v3.24, or a 32-bit build of YamagiQ2.  KMQ2, Quake2XP, and other modified engines will not work with this DLL!
+Linux users will either need to run a 32-bit OS variant or install a 32-bit compatibility layer applicable for the Quake 2 engine and the Gladiator SO they wish to use.
 
 Gladiator Bot Downloads & Documentation
 ---------------
-As of 2018, the original downloads for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
+As of 2018, the original Gladiator downloads and documentation for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
  
 ###Building
 - For Windows users, a compiled gamex86.dll is downloadable from this repository.
@@ -14,20 +21,30 @@ As of 2018, the original downloads for 32-bit Windows and Linux are available at
 
 Installation
 ---------------
-Place the uGladQ2 library into the "gladiator" folder in your Q2 directory.  Make a backup of the original file if desired.
+Make a backup of any original .dll (or .so) files if desired.  Place the uGladQ2 library into the "gladiator" folder in your Q2 directory, then start Quake 2 normally.
 
-Compatibility
+New Console Variables
+--------------
+Version 0.97u adds the following console variables.  These are also toggle-able from the in-game menu.  For all other commands see the original documentation for version 0.96 (included in the downloads at the link above).
+
+ctf_hook <0/1>::
+    Toggle "offhand hook" availability off/on in CTF matches.  Also available from the in-game "CTF" menu.  Default: ON.
+    NOTES   - Any active bots must be reloaded if changing this setting from the console.
+            - Bots don't use the regular grappling hook.
+
+ra_fastswitch <0/1>::
+    Toggle "fast weapon switching" off/on in Rocket Arena matches.  Also available from the in-game "RA2" menu.  Default: OFF.
+
+Obsolete Variables
+--------------
+The following console variables are no longer in use.
+
+ra_playercycle <0/1>::
+    Possibly intended for debugging.  When set to "0" all observers in an arena were spawned into matches as participants regardless of team membership.  Also removed from the in-game "RA2" menu.
+
+Legalities
 ---------------
-While this game source will probably build on virtually any architecture type, compiled versions of the proprietary Gladiator Bot library are only available for 32-bit Windows and Linux systems.  Compatibility has been verified running Quake 2 v3.24 ("The Unofficial Patch") in Windows XP.
-
-As of Windows 10, full compatibility for Win32 applications is still maintained, so Windows users should be able to run the uGladQ2 DLL and play against bots using a 32-bit Quake 2 engine (such as v3.20 or v3.24).  Linux users will either need to run a 32-bit OS variant or install a 32-bit compatibility layer applicable for the Quake 2 engine and the Gladiator SO they wish to use.
-
-###Copyright and distribution permissions 
-No warranties are made--expressed or implied--regarding the usage, functionality, or implied operability of this source code. All elements are available solely on an "as-is" basis. Usage is subject to the user's own risk.
-
-The Gladiator Bot game source code may NOT be sold or used in commercial products in ANY form.
-
-Should you decide to release a modified version of the Gladiator Bot game source code or parts of it, in source code or compiled form, you MUST add the following text to the documentation included with your product.
+The license for the Gladiator Bot's game source requires that the following text be included in this file:
 
     This product incorporates source code from the Gladiator bot.
     The Gladiator bot is available at the Gladiator Bot page
@@ -38,8 +55,3 @@ Should you decide to release a modified version of the Gladiator Bot game source
     This program may NOT be sold in ANY form whatsoever. If you have paid
     for this product, you should contact MrElusive immidiately via the
     Gladiator bot page or at MrElusive@botepidemic.com
-
-Origination
----------------
-The code bases for this project were publicly released by id Sotware, Xatrix Entertainment, Rogue Entertainment, David Wright, and MrElusive during the years 1998 and 1999.  Interested parties should contact the respective creators or their successors for licensing information.
-
