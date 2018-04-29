@@ -1,7 +1,7 @@
 # uGladQ2
 MrElusive's Gladiator Bot is the most realistic non-human deathmatch opponent ("bot") available for Quake 2.  (The Quake 3: Arena bot is the direct successor of the Gladiator Bot.)  The source code for the Quake 2 version of the bot was never released, however the source for the game-types they can play was made available.
 
-This is an Unofficial effort to clean up the rough edges in the game source for the original Gladiator Bot, making the available Deathmatch types (particularly "Capture the Flag" and "Rocket Arena") more polished.
+This is an Unofficial effort to clean up the rough edges in the game source for the original Gladiator Bot, making the available Deathmatch types (particularly "Capture the Flag" and "Rocket Arena") more polished.  See the CHANGELOG for a full list of improvements.
 
 Compatibility
 ---------------
@@ -12,7 +12,7 @@ Linux users will either need to run a 32-bit OS variant or install a 32-bit comp
 
 Gladiator Bot Downloads & Documentation
 ---------------
-As of 2018, the original Gladiator downloads and documentation for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
+As of April 2018, the original Gladiator downloads and documentation for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
  
 Building
 ---------------
@@ -28,13 +28,14 @@ New Console Variables
 --------------
 Version 0.97u adds the following console variables.  These are also toggle-able from the in-game menu.  For all other commands see the original documentation for version 0.96 (included in the downloads at the link above).
 
-ctf_hook <0/1>:: Default: ON.
+ctf_hook <0/1>: Default: ON.
 - Toggle "offhand hook" availability off/on in CTF matches.  Also available from the in-game "CTF" menu.
+
 NOTES
 1. Any active bots must be reloaded if changing this setting from the console.
 2. Bots don't use the regular grappling hook.
 
-ra_fastswitch <0/1>:: Default: OFF.
+ra_fastswitch <0/1>: Default: OFF.
 - Toggle "fast weapon switching" off/on in Rocket Arena matches.  Also available from the in-game "RA2" menu.
 
 Obsolete Variables
