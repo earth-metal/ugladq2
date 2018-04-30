@@ -345,15 +345,19 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	if (observer)
 	{
 		dest = GetNextObserverSpawnPoint(arena);
-	
 		if (!dest)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "arena not found\n");
 			return;
 		} //end if
-
-		ent->client->resp.context = arena;
-
+		//if the player is changing arenas
+		if (ent->client->resp.context != arena)
+		{
+			//put the client in the desired arena
+			ent->client->resp.context = arena;
+			//put the client at the end of the waiting list
+			ent->client->ra_time = level.time;
+		}
 		if (arena)
 		{
 			gi.dprintf("%s moved to arena %d as observer\n", ent->client->pers.netname, arena);
@@ -686,10 +690,6 @@ void Cmd_toarena_f(edict_t *ent, int context)
 		else gi.dprintf("arena number not in the range [0, %d]\n", num_arenas);
 		return;
 	} //end if
-	//put the client in the desired arena
-	ent->client->resp.context = context;
-	//put the client at the end of the waiting list
-	ent->client->ra_time = level.time;
 	//move to the arena
 	RA2_MoveToArena(ent, context, true);
 } //end of the function Cmd_toarena_f
@@ -925,8 +925,6 @@ void RA2_StartMatch(int context)
 //===========================================================================
 void Cmd_start_match_f(edict_t *ent, int context)
 {
-	edict_t *e;
-
 	if (!ra->value)
 	{
 		if (ent) gi.cprintf(ent, PRINT_HIGH, "Rocket Arena should be enabled to use this command\n");
@@ -948,92 +946,71 @@ void Cmd_start_match_f(edict_t *ent, int context)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RA2_StopMatch(int context)
-{
-	int i;
-	edict_t *e;
-
-	//mark the match as completed
-	e = G_Find(NULL, FOFS(classname), "arenacountdown");
-	while(e)
-	{
-		if (e->style == context)
-		{
-			G_FreeEdict(e);
-			break;
-		}
-		e = G_Find(e, FOFS(classname), "arenacountdown");
-	} //end while
-	//respawn all the players
-	for (i = 0; i < maxclients->value; i++)
-	{
-		e = g_edicts + 1 + i;
-		if (!e->inuse) continue;
-		if (!e->client) continue;
-		if (e->client->resp.context != context) continue;
-		if (e->health <= 0 || e->deadflag == DEAD_DEAD)
-		{
-			respawn(e);
-		} //endif
-	} //end for
-	//
-	for (i = 0; i < maxclients->value; i++)
-	{
-		e = g_edicts + 1 + i;
-		if (!e->inuse) continue;
-		if (!e->client) continue;
-		if (e->client->resp.context != context) continue;
-		if (e->movetype != MOVETYPE_WALK) continue;
-		//
-		RA2_MoveToArena(e, e->client->resp.context, true);
-		e->takedamage = DAMAGE_NO;
-		e->flags |= FL_NOTARGET;
-	} //end for
-	//
-	if (gi.cvar("mstart_auto", "0", 0)->value)
-	{
-		Cmd_start_match_f(NULL, context);
-	} //end if
-} //end of the function RA2_StopMatch
-//===========================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//===========================================================================
 void RA2_StopMatch_think(edict_t *ent)
 {
 	if (ent->count <= 0)
 	{
-		RA2_StopMatch(ent->style);
+		int i;
+		edict_t *e;
+
+		//mark the match as completed
+		e = G_Find(NULL, FOFS(classname), "arenacountdown");
+		while(e)
+		{
+			if (e->style == ent->style)
+			{
+				G_FreeEdict(e);
+				break;
+			}
+			e = G_Find(e, FOFS(classname), "arenacountdown");
+		} //end while
+		//respawn all the players
+		for (i = 0; i < maxclients->value; i++)
+		{
+			e = g_edicts + 1 + i;
+			if (!e->inuse) continue;
+			if (!e->client) continue;
+			if (e->client->resp.context != ent->style) continue;
+			if (e->health <= 0 || e->deadflag == DEAD_DEAD)
+			{
+				respawn(e);
+			} //endif
+		} //end for
+		//
+		for (i = 0; i < maxclients->value; i++)
+		{
+			e = g_edicts + 1 + i;
+			if (!e->inuse) continue;
+			if (!e->client) continue;
+			if (e->client->resp.context != ent->style) continue;
+			if (e->movetype != MOVETYPE_WALK) continue;
+			//
+			RA2_MoveToArena(e, e->client->resp.context, true);
+			e->takedamage = DAMAGE_NO;
+			e->flags |= FL_NOTARGET;
+		} //end for
+		//
+		if (gi.cvar("mstart_auto", "0", 0)->value)
+		{
+			RA2_StartMatch(ent->style);
+		} //end if
+
 		G_FreeEdict(ent);
 		return;
 	} //end if
 	ent->count--;
 	ent->nextthink = level.time + 1;
-} //end of the function RA2_StartMatch_think
+} //end of the function RA2_StopMatch_think
 //===========================================================================
 //
 // Parameter:				-
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void Cmd_stop_match_f(edict_t *ent, int context, int delay)
+void RA2_StopMatch(int context, int delay)
 {
 	edict_t *e;
-	
-	if (!ra->value)
-	{
-		if (ent) gi.cprintf(ent, PRINT_HIGH, "Rocket Arena should be enabled to use this command\n");
-		else gi.dprintf("Rocket Arena should be enabled to use this command\n");
-		return;
-	} //end if
-	if (context <= 0 || context > num_arenas)
-	{
-		if (ent) gi.centerprintf(ent, "first enter an arena in the range [1, %d]", num_arenas);
-		else gi.dprintf("the arena number must be in the range [1, %d]\n", num_arenas);
-		return;
-	} //end if
+
 	e = G_Find(NULL, FOFS(classname), "stopmatch");
 	while(e)
 	{
@@ -1046,6 +1023,29 @@ void Cmd_stop_match_f(edict_t *ent, int context, int delay)
 	e->count = delay;
 	e->think = RA2_StopMatch_think;
 	e->nextthink = level.time + 1;
+} //end of the function RA2_StopMatch
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+void Cmd_stop_match_f(edict_t *ent, int context, int delay)
+{
+	if (!ra->value)
+	{
+		if (ent) gi.cprintf(ent, PRINT_HIGH, "Rocket Arena should be enabled to use this command\n");
+		else gi.dprintf("Rocket Arena should be enabled to use this command\n");
+		return;
+	} //end if
+	if (context <= 0 || context > num_arenas)
+	{
+		if (ent) gi.centerprintf(ent, "first enter an arena in the range [1, %d]", num_arenas);
+		else gi.dprintf("the arena number must be in the range [1, %d]\n", num_arenas);
+		return;
+	} //end if
+
+	RA2_StopMatch(context, delay);
 } //end of the function Cmd_stop_match_f
 //===========================================================================
 //
@@ -1188,7 +1188,7 @@ void RA2_CheckRules(void)
 			RA2_ArenaCenterPrint(buf, context);
 		} //end if
 		//stop the match after three seconds
-		Cmd_stop_match_f(NULL, context, 3);
+		RA2_StopMatch(context, 3);
 	} //end for
 } //end of the function RA2_CheckRules
 #endif //ROCKETARENA #ifdef at start of file
