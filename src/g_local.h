@@ -914,6 +914,7 @@ edict_t *findradius2 (edict_t *from, vec3_t org, float rad);
 //
 // g_combat.c
 //
+char *ClientTeam (edict_t *ent);
 qboolean OnSameTeam (edict_t *ent1, edict_t *ent2);
 qboolean CanDamage (edict_t *targ, edict_t *inflictor);
 void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir, vec3_t point, vec3_t normal, int damage, int knockback, int dflags, int mod);

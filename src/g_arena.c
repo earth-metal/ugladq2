@@ -1055,16 +1055,17 @@ void Cmd_stop_match_f(edict_t *ent, int context, int delay)
 //===========================================================================
 void RA2_CheckRules(void)
 {
-	int i, context, numarenaplayers, livingplayers;
+	int i, context, numarenateams, livingplayers;
 	edict_t *lastclient, *e;
-	char buf[1024];
+	char buf[1024], arena_team_list[MAX_STRING_CHARS];
 
 	//check for automatically stopping matches
 	for (context = 1; context <= num_arenas; context++)
 	{
 		livingplayers = 0;
-		numarenaplayers = 0;
+		numarenateams = 0;
 		lastclient = NULL;
+		strcpy(arena_team_list, "");
 		//find out if there are still people playing in the arena
 		for (i = 0; i < maxclients->value; i++)
 		{
@@ -1072,8 +1073,20 @@ void RA2_CheckRules(void)
 			if (!e->inuse) continue;
 			if (!e->client) continue;
 			if (e->client->resp.context != context) continue;
-			//another player in this arena
-			numarenaplayers++;
+			//another player or team in this arena
+			if ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))
+			{
+				//if we haven't already counted this team
+				if (!strstr(arena_team_list, ClientTeam(e)))
+				{
+					strcat(arena_team_list, ClientTeam(e));
+					numarenateams++;
+				}
+			}
+			else
+			{
+				numarenateams++;
+			}
 			//if the player is observing
 			if (e->flags & FL_NOTARGET) continue;
 			//if the player is dead
@@ -1100,8 +1113,8 @@ void RA2_CheckRules(void)
 		} //end for
 		//if there are still people playing in the arena
 		if (i < maxclients->value) continue;
-		//if there aren't anough players in the arena anyway
-		if (numarenaplayers <= 1) continue;
+		//if there aren't anough teams in the arena anyway
+		if (numarenateams <= 1) continue;
 		//if there is only one active player in the arena
 		//or there are only active players in the arena on the same team
 		if (!lastclient)
