@@ -72,6 +72,7 @@
 #define MID_RA2_RAILGUN				49
 #define MID_RA2_BFG					50
 #define MID_RA2_FASTSWITCH			56
+#define MID_RA2_MSTART_AUTO			57
 #define MID_HELP						51
 #define MID_CREDITS					52
 #define MID_EXIT						53
@@ -373,6 +374,7 @@ void MenuProc(edict_t *ent, int id)
 		case MID_RA2_RAILGUN: ToggleMenuCVarBoolean(gi.cvar("railgun", "", 0), "Railgun", id); break;
 		case MID_RA2_BFG: ToggleMenuCVarBoolean(gi.cvar("bfg", "", 0), "BFG10K", id); break;
 		case MID_RA2_FASTSWITCH: ToggleMenuCVarBoolean(gi.cvar("ra_fastswitch", "", 0), "fast weap-switch", id); break;
+		case MID_RA2_MSTART_AUTO: ToggleMenuCVarBoolean(gi.cvar("mstart_auto", "", 0), "match auto-start", id); break;
 		case MID_BACK: //back to the parent menu
 		{
 			MenuBack(ent);
@@ -588,6 +590,7 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_RAILGUN, NULL, OnOffString("Railgun", (int) (gi.cvar("railgun", "0", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BFG, NULL, OnOffString("BFG", (int) (gi.cvar("bfg", "0", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_FASTSWITCH, NULL, OnOffString("fast weap-switch", (int) (gi.cvar("ra_fastswitch", "0", 0))->value), NULL);
+	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_MSTART_AUTO, NULL, OnOffString("match auto-start", (int) (gi.cvar("mstart_auto", "0", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	//
