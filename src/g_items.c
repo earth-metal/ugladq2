@@ -1563,7 +1563,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 	if (ra->value)
 	{
 		//no weapons in rocket arena and if set no items at all
-		if (gi.cvar("noitems", "0", 0)->value || (item->flags & IT_WEAPON))
+		if (gi.cvar("noitems", "1", 0)->value || (item->flags & IT_WEAPON))
 		{
 			G_FreeEdict(ent);
 			return;
