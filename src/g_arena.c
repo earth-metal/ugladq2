@@ -438,10 +438,10 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	if (!KillBox(ent))
 	{
 	} //endif
+	ent->takedamage = DAMAGE_NO; //always start with no damage
 	if (observer)
 	{
 		ent->flags |= FL_NOTARGET;
-		ent->takedamage = DAMAGE_NO; //always start with no damage
 		if (strcmp(dest->classname, "misc_teleporter_dest") != 0
 #ifdef BOT
 			//bots always go into free flying mode.
@@ -789,12 +789,13 @@ edict_t *RA2_GetLongestWaiting(int arena)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
+qboolean RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 {
 	int i;
 	edict_t *e;
 	int same_team_already_in_arena = 0;
 	int arena_capacity = CountSpawnPoints("info_player_deathmatch", arena);
+	qboolean team_includes_human = false;
 
 	for (i = 0; i < maxclients->value; i++)
 	{
@@ -813,6 +814,8 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 				RA2_GiveAmmo(e);
 				same_team_already_in_arena++;
 				RA2_MoveToArena(e, e->client->resp.context, false);
+				if (!(e->flags & FL_BOT))
+					team_includes_human = true;
 			}
 			else
 			{
@@ -820,6 +823,7 @@ void RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 			}
 		} //end if
 	} //end for
+	return team_includes_human;
 } //end of the function RA2_AddPlayersOnSameTeamToMatch
 //===========================================================================
 //
@@ -873,6 +877,7 @@ void RA2_StartMatch(int context)
 {
 	int i;
 	edict_t *e;
+	qboolean first_team_includes_human;
 
 	//check for an active match in this arena
 	e = G_Find(NULL, FOFS(classname), "arenacountdown");
@@ -881,32 +886,51 @@ void RA2_StartMatch(int context)
 		if (e->style == context) return;
 		e = G_Find(e, FOFS(classname), "arenacountdown");
 	} //end while
-
+	//check for an intermission in this arena
+	e = G_Find(NULL, FOFS(classname), "stopmatch");
+	while(e)
+	{
+		if (e->style == context)
+		{
+			if(e->nextthink) return;
+			else
+			{
+				G_FreeEdict(e);
+				break;
+			}
+		}
+		e = G_Find(e, FOFS(classname), "stopmatch");
+	} //end while
+	//respawn any dead players
+	for (i = 0; i < maxclients->value; i++)
+	{
+		e = g_edicts + 1 + i;
+		if (!e->inuse) continue;
+		if (!e->client) continue;
+		if (e->client->resp.context != context) continue;
+		if (e->health <= 0 || e->deadflag == DEAD_DEAD)
+		{
+			respawn(e);
+		} //endif
+	} //end for
+	//
 	gi.dprintf("Starting match in %s\n", RA2_GetArenaName(context));
-	if (ra_botcycle->value)
-	{
-		//add the winner(s) if human, or the first human(s) in line
+	//get any winner(s) from the previous match
+	e = RA2_GetArenaWinner(context);
+	//there are no winners so get the longest waiting player/team
+	if (!e) e = RA2_GetLongestWaiting(context);
+	//no teams to add... how did we get here?
+	if (!e)
+		return;
+	//add the first player/team
+	else
+		first_team_includes_human = RA2_AddPlayersOnSameTeamToMatch(context, e);
+	//if bot-cycling is on and the first team didn't include a human
+	if (ra_botcycle->value && !first_team_includes_human)
 		e = RA2_GetLongestWaitingHuman(context);
-	}
 	else
-	{
-		//add the winner(s) from the previous match
-		e = RA2_GetArenaWinner(context);
-	}
-
-	if (e)
-	{
-		//if there is/are winner(s)
-		RA2_AddPlayersOnSameTeamToMatch(context, e);
-	} //end if
-	else
-	{
-		//there are no winners so add the longest waiting player/team
 		e = RA2_GetLongestWaiting(context);
-		if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
-	} //end else
 	//add the second player/team
-	e = RA2_GetLongestWaiting(context);
 	if (e) RA2_AddPlayersOnSameTeamToMatch(context, e);
 
 	//start countdown
@@ -964,38 +988,13 @@ void RA2_StopMatch_think(edict_t *ent)
 			}
 			e = G_Find(e, FOFS(classname), "arenacountdown");
 		} //end while
-		//respawn all the players
-		for (i = 0; i < maxclients->value; i++)
-		{
-			e = g_edicts + 1 + i;
-			if (!e->inuse) continue;
-			if (!e->client) continue;
-			if (e->client->resp.context != ent->style) continue;
-			if (e->health <= 0 || e->deadflag == DEAD_DEAD)
-			{
-				respawn(e);
-			} //endif
-		} //end for
-		//
-		for (i = 0; i < maxclients->value; i++)
-		{
-			e = g_edicts + 1 + i;
-			if (!e->inuse) continue;
-			if (!e->client) continue;
-			if (e->client->resp.context != ent->style) continue;
-			if (e->movetype != MOVETYPE_WALK) continue;
-			//
-			RA2_MoveToArena(e, e->client->resp.context, true);
-			e->takedamage = DAMAGE_NO;
-			e->flags |= FL_NOTARGET;
-		} //end for
-		//
 		if (gi.cvar("mstart_auto", "0", 0)->value)
 		{
 			RA2_StartMatch(ent->style);
 		} //end if
 
-		G_FreeEdict(ent);
+		//mark the arena at intermission
+		ent->nextthink = 0;
 		return;
 	} //end if
 	ent->count--;
