@@ -988,10 +988,6 @@ void RA2_StopMatch_think(edict_t *ent)
 			}
 			e = G_Find(e, FOFS(classname), "arenacountdown");
 		} //end while
-		if (gi.cvar("mstart_auto", "0", 0)->value)
-		{
-			RA2_StartMatch(ent->style);
-		} //end if
 
 		//mark the arena at intermission
 		ent->nextthink = 0;
@@ -1054,14 +1050,13 @@ void Cmd_stop_match_f(edict_t *ent, int context, int delay)
 //===========================================================================
 void RA2_CheckRules(void)
 {
-	int i, context, numarenateams, livingplayers;
+	int i, context, numarenateams;
 	edict_t *lastclient, *e;
 	char buf[1024], arena_team_list[MAX_STRING_CHARS];
 
 	//check for automatically stopping matches
 	for (context = 1; context <= num_arenas; context++)
 	{
-		livingplayers = 0;
 		numarenateams = 0;
 		lastclient = NULL;
 		strcpy(arena_team_list, "");
@@ -1072,7 +1067,7 @@ void RA2_CheckRules(void)
 			if (!e->inuse) continue;
 			if (!e->client) continue;
 			if (e->client->resp.context != context) continue;
-			//another player or team in this arena
+			//another player in this arena
 			if ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))
 			{
 				//if we haven't already counted this team
@@ -1091,8 +1086,6 @@ void RA2_CheckRules(void)
 			//if the player is dead
 			if (e->health <= 0 || e->deadflag == DEAD_DEAD) continue;
 			//this player is still living in the arena
-			livingplayers++;
-			//
 			if ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))
 			{
 				//if there are other players in the arena
@@ -1114,13 +1107,6 @@ void RA2_CheckRules(void)
 		if (i < maxclients->value) continue;
 		//if there aren't anough teams in the arena anyway
 		if (numarenateams <= 1) continue;
-		//if there is only one active player in the arena
-		//or there are only active players in the arena on the same team
-		if (!lastclient)
-		{
-			//if NOT there are no living players at all in the arena and the game should be auto restarted
-			if (!(!livingplayers && gi.cvar("mstart_auto", "0", 0)->value)) continue;
-		} //end if
 		//if the match is already being stopped
 		e = G_Find(NULL, FOFS(classname), "stopmatch");
 		while(e)
@@ -1128,7 +1114,15 @@ void RA2_CheckRules(void)
 			if (e->style == context) break;
 			e = G_Find(e, FOFS(classname), "stopmatch");
 		} //end while
-		if (e) continue;
+		if (e)
+		{
+			//if the arena is at intermission and auto starting is on
+			if(!e->nextthink && gi.cvar("mstart_auto", "0", 0)->value)
+			{
+				RA2_StartMatch(context);
+			}
+			continue;
+		}
 		//if the match is already being started
 		e = G_Find(NULL, FOFS(classname), "arenacountdown");
 		while(e)
