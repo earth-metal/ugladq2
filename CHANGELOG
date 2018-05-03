@@ -1,3 +1,14 @@
+v0.98u
+--------------
+- RA2: Keep match winners in the arena between matches.
+- RA2: Spawn match winners into the next match when bot-cycling is on.
+- RA2: Don't auto-respawn observers into the observer room if already there.
+- RA2: Option for "match auto-start" available from the "RA2" in-game menu.
+- RA2: Make auto-start idle in arenas with less than two teams.
+- RA2: Auto-start matches if 2+ teams are observing and no one is playing.
+- RA2: Don't spawn health, armor, or ammo by default. (ie: "noitems 1")
+- RA2: Put players into arena 1 as observers on initial spawn in DM maps.
+
 v0.97u
 --------------
 - Don't print message "extended delayed ucmd heap" during game init.

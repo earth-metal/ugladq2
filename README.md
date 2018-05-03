@@ -26,24 +26,24 @@ Make a backup of any original .dll (or .so) files if desired.  Place the uGladQ2
 
 New Console Variables
 --------------
-Version 0.97u adds the following console variables.  These are also toggle-able from the in-game menu.  For all other commands see the original documentation for version 0.96 (included in the downloads at the link above).
+uGladQ2 adds the following console variables.  These are also toggle-able from the in-game menu.  For all other commands see the original documentation for version 0.96 (included in the downloads at the link above).
 
 ctf_hook <0/1>: Default: ON.
-- Toggle "offhand hook" availability off/on in CTF matches.  Also available from the in-game "CTF" menu.
+- Toggle "offhand hook" availability off/on in CTF matches.  Available from the in-game "CTF" menu.
 
 NOTES
 1. Any active bots must be reloaded if changing this setting from the console.
 2. Bots don't use the regular grappling hook.
 
 ra_fastswitch <0/1>: Default: OFF.
-- Toggle "fast weapon switching" off/on in Rocket Arena matches.  Also available from the in-game "RA2" menu.
+- Toggle "fast weapon switching" off/on in Rocket Arena matches.  Available from the in-game "RA2" menu.
 
 Obsolete Variables
 --------------
 The following console variables are no longer in use.
 
 ra_playercycle <0/1>
-- Possibly intended for debugging.  When set to "0" all observers in an arena were spawned into matches as participants regardless of team membership.  Also removed from the in-game "RA2" menu.
+- Possibly intended for debugging.  When set to "0" all observers in an arena were spawned into matches as participants regardless of team membership.  Removed from the in-game "RA2" menu.
 
 Legalities
 ---------------
