@@ -342,6 +342,8 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	edict_t *dest;
 	int i;
 	
+	if (num_arenas == 1)
+		arena = 1;
 	if (observer)
 	{
 		dest = GetNextObserverSpawnPoint(arena);
