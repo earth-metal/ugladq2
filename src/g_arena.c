@@ -9,7 +9,6 @@
 #ifdef ROCKETARENA //#endif at the end of the file
 #include "bl_spawn.h"
 
-extern float PlayersRangeFromSpot (edict_t *spot);
 extern gitem_armor_t bodyarmor_info;
 extern int weapon_vals[];
 
@@ -239,6 +238,57 @@ void SetObserverMode(edict_t *ent, observer_mode_t omode)
 	} //end switch
 } //end of the function SetObserverMode
 
+float ArenaPlayersRangeFromSpot (edict_t *spot, int arena, qboolean observer)
+{
+	edict_t	*player;
+	float	bestplayerdistance;
+	vec3_t	v;
+	int		n;
+	float	playerdistance;
+
+
+	bestplayerdistance = 9999999;
+
+	for (n = 1; n <= maxclients->value; n++)
+	{
+		player = &g_edicts[n];
+
+		if (!player->inuse)
+			continue;
+
+		if (player->health <= 0)
+			continue;
+
+		if (!player->client)
+			continue;
+
+		if (player->client->resp.context != arena)
+			continue;
+
+		if (!observer)
+		{
+			if (player->flags & FL_NOTARGET)
+				continue;
+		}
+		else
+		{
+			if (!(player->flags & FL_NOTARGET))
+				continue;
+		}
+
+		if (player->solid == SOLID_NOT)
+			continue;
+
+		VectorSubtract (spot->s.origin, player->s.origin, v);
+		playerdistance = VectorLength (v);
+
+		if (playerdistance < bestplayerdistance)
+			bestplayerdistance = playerdistance;
+	}
+
+	return bestplayerdistance;
+}
+
 int CountSpawnPoints(char *classn, int arena)
 {
 	edict_t	*spot;
@@ -291,21 +341,25 @@ edict_t *SelectRandomArenaSpawnPoint (char *classn, int arena)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-edict_t *SelectFarthestArenaSpawnPoint(char *classn, int arena)
+edict_t *SelectFarthestArenaSpawnPoint(int arena, qboolean observer)
 {
 	edict_t	*bestspot;
 	float	bestdistance, bestplayerdistance;
 	edict_t	*spot;
-	
+	char *classn;
 	
 	spot = NULL;
 	bestspot = NULL;
 	bestdistance = 50;
+	if (observer)
+		classn = "misc_teleporter_dest";
+	else
+		classn = "info_player_deathmatch";
 	while ((spot = G_Find (spot, FOFS(classname), classn)) != NULL)
 	{
 		//gi.bprintf (PRINT_HIGH,"arena %d spot %d\n", arena, spot->arena);
 		if (spot->arena != arena && idmap==false) continue;
-		bestplayerdistance = PlayersRangeFromSpot (spot);
+		bestplayerdistance = ArenaPlayersRangeFromSpot (spot, arena, observer);
 		
 		if (bestplayerdistance > bestdistance)
 		{
@@ -321,7 +375,7 @@ edict_t *GetNextObserverSpawnPoint(int arena)
 {
 	edict_t *dest = NULL;
 
-	if (!(dest = SelectFarthestArenaSpawnPoint ("misc_teleporter_dest", arena)))
+	if (!(dest = SelectFarthestArenaSpawnPoint (arena, true)))
 	{
 		dest = SelectRandomArenaSpawnPoint ("info_player_deathmatch", arena);
 	} //end if
@@ -372,7 +426,7 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	} //end if
 	else
 	{
-		dest = SelectFarthestArenaSpawnPoint ("info_player_deathmatch", arena);
+		dest = SelectFarthestArenaSpawnPoint (arena, false);
 
 		if (!dest)
 		{
