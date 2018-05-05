@@ -17,6 +17,7 @@ endif
 
 # Compiler options
 CC=gcc
+#CC=i686-w64-mingw32-gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp -DC_ONLY
 
 #use these cflags to optimize it
@@ -28,9 +29,13 @@ CFLAGS=$(BASE_CFLAGS) -O6 -ffast-math -funroll-loops \
 
 LDFLAGS=-ldl -lm
 ifeq ($(OSTYPE), Windows)
-SHLIBEXT=x86.dll
+ SHLIBEXT=x86.dll
 else
-SHLIBEXT=.so
+ ifeq ($(CC), i686-w64-mingw32-gcc)
+  SHLIBEXT=x86.dll
+ else
+  SHLIBEXT=.so
+ endif
 endif
 SHLIBCFLAGS=-fPIC
 SHLIBLDFLAGS=-shared
@@ -79,7 +84,7 @@ depend:
 
 
 install:
-	cp game.so ..
+	cp game$(SHLIBEXT) ..
 
 #
 # From "make depend"
