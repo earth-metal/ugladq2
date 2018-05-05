@@ -2605,7 +2605,7 @@ void ClientThink(edict_t *ent, usercmd_t *ucmd)
 #endif //OBSERVER
 				&& ent->movetype != MOVETYPE_NOCLIP
 #ifdef ROCKETARENA
-				&& !(ra->value && ent->takedamage == DAMAGE_NO)
+				&& !(ra->value && ent->takedamage != DAMAGE_AIM)
 #endif //ROCKETARENA
 				)
 			{
@@ -2699,7 +2699,7 @@ void ClientBeginServerFrame (edict_t *ent)
 #endif //OBSERVER
 		&& ent->movetype != MOVETYPE_NOCLIP
 #ifdef ROCKETARENA
-		&& !(ra->value && ent->takedamage == DAMAGE_NO)
+		&& !(ra->value && ent->takedamage != DAMAGE_AIM)
 #endif //ROCKETARENA
 		)
 		Think_Weapon (ent);

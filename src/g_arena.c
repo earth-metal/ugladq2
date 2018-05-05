@@ -494,10 +494,10 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	if (!KillBox(ent))
 	{
 	} //endif
-	ent->takedamage = DAMAGE_NO; //always start with no damage
 	if (observer)
 	{
 		ent->flags |= FL_NOTARGET;
+		ent->takedamage = DAMAGE_NO; //always start with no damage
 		if (strcmp(dest->classname, "misc_teleporter_dest") != 0
 #ifdef BOT
 			//bots always go into free flying mode.
@@ -517,6 +517,7 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	} //end if
 	else
 	{
+		ent->takedamage = DAMAGE_YES;
 		SetObserverMode(ent, NORMAL);
 	} //end else
 	gi.linkentity(ent);
