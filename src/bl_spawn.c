@@ -216,12 +216,6 @@ edict_t *BotCreate(char *userinfo, bot_library_t *lib)
 	//
 	//memcpy(ent->client->pers.userinfo, userinfo, MAX_INFO_STRING);
 	//
-#ifdef ROCKETARENA
-	if (ra->value)
-	{
-		RA2_MoveToArena(ent, (int) atof(Info_ValueForKey(userinfo, "arena")), true);
-	} //end if
-#endif //ROCKETARENA
 	//one extra bot
 	botglobals.numbots++;
 	//

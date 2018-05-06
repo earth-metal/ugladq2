@@ -401,8 +401,13 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	edict_t *dest;
 	int i;
 	
-	if (num_arenas == 1)
-		arena = 1;
+	if(!arena)
+	{
+		if (num_arenas == 1)
+			arena = 1;
+		else if (ent->flags & FL_BOT)
+			arena = gi.cvar("arena", "1", 0)->value;
+	}
 	if (observer)
 	{
 		dest = GetNextObserverSpawnPoint(arena);
@@ -418,6 +423,7 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 			ent->client->resp.context = arena;
 			//put the client at the end of the waiting list
 			ent->client->ra_time = level.time;
+			ent->client->ra_winner = false;
 		}
 		if (arena)
 		{
