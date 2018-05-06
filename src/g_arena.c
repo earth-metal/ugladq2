@@ -84,6 +84,11 @@ void RA2JoinArena10(edict_t *ent, pmenu_t *p)
 	RA2JoinArena(ent, 10);
 }
 
+void RA2JoinArena11(edict_t *ent, pmenu_t *p)
+{
+	RA2JoinArena(ent, 11);
+}
+
 pmenu_t arena_menu[] = {
 	{ "*Quake 2 - Gladiator Bot",		PMENU_ALIGN_CENTER, NULL, NULL },
 	{ "*Rocket Arena 2 - Arena List",	PMENU_ALIGN_CENTER, NULL, NULL },
@@ -98,7 +103,7 @@ pmenu_t arena_menu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena8 },
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena9 },
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena10 },
-	{ "Use [ and ] to move cursor",	PMENU_ALIGN_LEFT, NULL, NULL },
+	{ "Use [ and ] to move cursor",	PMENU_ALIGN_LEFT, NULL, RA2JoinArena11 },
 	{ "ENTER to select",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ "ESC to Exit Menu",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ "(TAB to Return)",	PMENU_ALIGN_LEFT, NULL, NULL },
@@ -583,7 +588,7 @@ void RA2_Init(edict_t *wsent)
 	} //end else
 
 	int i, j;
-	for (i=1, j=3; i<=10; i++)
+	for (i=1, j=3; i<=11; i++)
 	{
 		if (i <= num_arenas)
 		{
