@@ -219,8 +219,7 @@ edict_t *BotCreate(char *userinfo, bot_library_t *lib)
 #ifdef ROCKETARENA
 	if (ra->value)
 	{
-		ent->client->resp.context = (int) atof(Info_ValueForKey(userinfo, "arena"));
-		ent->client->ra_time = 0;
+		RA2_MoveToArena(ent, (int) atof(Info_ValueForKey(userinfo, "arena")), true);
 	} //end if
 #endif //ROCKETARENA
 	//one extra bot
