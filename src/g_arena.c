@@ -888,6 +888,9 @@ qboolean RA2_AddPlayersOnSameTeamToMatch(int arena, edict_t *ent)
 			else
 			{
 				gi.centerprintf(e, "Your team is too large\n");
+				//move player to observer room if not already there
+				if (!(e->flags & FL_NOTARGET))
+					RA2_MoveToArena(e, e->client->resp.context, true);
 			}
 		} //end if
 	} //end for
