@@ -460,9 +460,15 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 		ent->client->ps.gunindex = gi.modelindex(ent->client->pers.weapon->view_model);
 	} //end if
 	//remove the observer flag
-#ifdef OBSERVER
-	ent->flags &= ~FL_OBSERVER;
-#endif //OBSERVER
+	if (ent->client->resp.spectator)
+	{
+		ent->client->resp.spectator = false;
+		ent->client->pers.spectator = false;
+		// reset his spectator var
+		gi.WriteByte (svc_stufftext);
+		gi.WriteString ("spectator 0\n");
+		gi.unicast(ent, true);
+	}
 	ent->solid = SOLID_BBOX;
 	ent->movetype = MOVETYPE_WALK;
 	// clear entity state values

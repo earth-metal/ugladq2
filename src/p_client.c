@@ -1755,6 +1755,10 @@ void spectator_respawn (edict_t *ent)
 	if (ctf->value)
 		ent->client->resp.ctf_team = CTF_NOTEAM;
 #endif //ZOID
+#ifdef ROCKETARENA
+	if (ra->value)
+		ent->client->resp.context = 0;
+#endif //ROCKETARENA
 	PutClientInServer (ent);
 
 	// add a teleportation effect
