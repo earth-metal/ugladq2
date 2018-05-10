@@ -131,7 +131,7 @@ char *ctf_statusbar =
   "stat_string 27 "
 "endif "
 "if 28 "
-  "yb -65 "
+  "yb -66 "
   "xv 32 "
   "pic 28 "
 "endif "
