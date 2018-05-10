@@ -126,11 +126,14 @@ char *ctf_statusbar =
 
 // id view state
 "if 27 "
-  "xv 0 "
   "yb -58 "
-  "string \"Viewing\" "
   "xv 64 "
   "stat_string 27 "
+"endif "
+"if 28 "
+  "yb -65 "
+  "xv 32 "
+  "pic 28 "
 "endif "
 ;
 
@@ -935,6 +938,7 @@ static void CTFSetIDView(edict_t *ent)
 	int i;
 
 	ent->client->ps.stats[STAT_CTF_ID_VIEW] = 0;
+	ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 0;
 
 	AngleVectors(ent->client->v_angle, forward, NULL, NULL);
 	VectorScale(forward, 1024, forward);
@@ -943,6 +947,12 @@ static void CTFSetIDView(edict_t *ent)
 	if (tr.fraction < 1 && tr.ent && tr.ent->client) {
 		ent->client->ps.stats[STAT_CTF_ID_VIEW] = 
 			CS_PLAYERSKINS + (ent - g_edicts - 1);
+		if (tr.ent->client->resp.ctf_team == CTF_TEAM1)
+			ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 
+				gi.imageindex ("i_ctf1");
+		else if (tr.ent->client->resp.ctf_team == CTF_TEAM2)
+			ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 
+				gi.imageindex ("i_ctf2");
 		return;
 	}
 
@@ -961,8 +971,19 @@ static void CTFSetIDView(edict_t *ent)
 		}
 	}
 	if (bd > 0.90)
+	{
 		ent->client->ps.stats[STAT_CTF_ID_VIEW] = 
 			CS_PLAYERSKINS + (best - g_edicts - 1);
+		if (best && best->client)
+		{
+			if (best->client->resp.ctf_team == CTF_TEAM1)
+				ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 
+					gi.imageindex ("i_ctf1");
+			else if (best->client->resp.ctf_team == CTF_TEAM2)
+				ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 
+					gi.imageindex ("i_ctf2");
+		}
+	}
 }
 
 void SetCTFStats(edict_t *ent)
@@ -1088,6 +1109,7 @@ void SetCTFStats(edict_t *ent)
 		ent->client->ps.stats[STAT_CTF_JOINED_TEAM2_PIC] = gi.imageindex ("i_ctfj");
 
 	ent->client->ps.stats[STAT_CTF_ID_VIEW] = 0;
+	ent->client->ps.stats[STAT_CTF_ID_VIEW_PIC] = 0;
 	if (ent->client->resp.id_state)
 		CTFSetIDView(ent);
 }
@@ -2688,7 +2710,9 @@ qboolean CTFStartClient(edict_t *ent)
 		CTFAssignSkin(ent, s);
 		return false;
 	} //end if
+	else
 #endif //BOT
+		ent->client->resp.id_state = true;
 
 	if (!((int)dmflags->value & DF_CTF_FORCEJOIN))
 	{

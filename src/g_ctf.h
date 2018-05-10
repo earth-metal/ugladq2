@@ -15,6 +15,7 @@
 #define STAT_CTF_TEAM2_HEADER		25
 #define STAT_CTF_TECH				26
 #define STAT_CTF_ID_VIEW			27
+#define STAT_CTF_ID_VIEW_PIC		28
 
 typedef enum {
 	CTF_NOTEAM,
