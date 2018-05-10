@@ -1751,6 +1751,10 @@ void spectator_respawn (edict_t *ent)
 	ent->client->resp.score = ent->client->pers.score = 0;
 
 	ent->svflags &= ~SVF_NOCLIENT;
+#ifdef ZOID
+	if (ctf->value)
+		ent->client->resp.ctf_team = CTF_NOTEAM;
+#endif //ZOID
 	PutClientInServer (ent);
 
 	// add a teleportation effect
@@ -1769,7 +1773,19 @@ void spectator_respawn (edict_t *ent)
 	ent->client->respawn_time = level.time;
 
 	if (ent->client->pers.spectator) 
+	{
+#ifdef ZOID
+		if (ctf->value)
+		{
+			ent->client->pers.spectator = false;
+			// reset his spectator var
+			gi.WriteByte (svc_stufftext);
+			gi.WriteString ("spectator 0\n");
+			gi.unicast(ent, true);
+		}
+#endif //ZOID
 		gi.bprintf (PRINT_HIGH, "%s has moved to the sidelines\n", ent->client->pers.netname);
+	}
 	else
 		gi.bprintf (PRINT_HIGH, "%s joined the game\n", ent->client->pers.netname);
 }
