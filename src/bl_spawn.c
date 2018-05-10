@@ -683,9 +683,9 @@ void CheckMinimumPlayers(void)
 	{
 		cl_ent = g_edicts + 1 + i;
 		if (!cl_ent->inuse) continue;
-#ifdef OBSERVER
-		if (cl_ent->flags & FL_OBSERVER) continue;
-#endif //OBSERVER
+		if (ctf->value)
+			if (!cl_ent->client || cl_ent->client->resp.ctf_team == CTF_NOTEAM)
+				continue;
 #ifdef TOURNEY
 		if(!cl_ent->client || cl_ent->client->resp.entered != ENTERED_ENTERED)
 			continue;
