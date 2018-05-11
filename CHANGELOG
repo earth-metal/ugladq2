@@ -1,3 +1,10 @@
+v0.98.2u
+--------------
+- Remove player from team/arena when "spectator 1" is set; keep variable in sync.
+- CTF: Enable player "id" display by default; show team icon.
+- CTF: Ignore observers when spawning bots against "minumumplayers" variable.
+- RA2: Improve recognition of players changing arenas & bots entering arenas.
+
 v0.98.1u
 --------------
 - RA2: Ignore observers when determining spawn points for match participants.
