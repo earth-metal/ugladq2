@@ -510,6 +510,13 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
 	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
 	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
+	if(ctf->value)
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_CTF_BOTTEAM, NULL, BotCTFTeamString(), NULL);
+	else if (ra->value)
+	{
+		sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
+	}
 	QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_ADD, addmenu, "add bot", NULL);
 	QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_ADDRANDOM, NULL, "add random", NULL);
 	QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_REMOVE, removemenu, "remove bot", NULL);
@@ -550,7 +557,6 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(dmmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	//Capture The Flag
 	ctfmenu = QuakeCreateMenu(MID_CTF, "", "m_ctf");
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_BOTTEAM, NULL, BotCTFTeamString(), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_FORCEJOIN, NULL, OnOffString("force join", (int) dmflags->value & DF_CTF_FORCEJOIN), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_ARMOR_PROTECT, NULL, OnOffString("armor protect", (int) dmflags->value & DF_ARMOR_PROTECT), NULL);
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_NO_TECH, NULL, OnOffString("allow techs", !((int) dmflags->value & DF_CTF_NO_TECH)), NULL);
@@ -573,8 +579,6 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	//Rocket Arena 2
 	ra2menu = QuakeCreateMenu(MID_RA2, "", "m_ra2");
-	sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTCYCLE, NULL, OnOffString("bot cycle", (int) (gi.cvar("ra_botcycle", "1", 0))->value), NULL);
 	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SELFDAMAGE, NULL, OnOffString("self damage", (int) (gi.cvar("selfdamage", "1", 0))->value), NULL);
