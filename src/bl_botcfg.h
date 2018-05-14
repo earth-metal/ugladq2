@@ -17,6 +17,7 @@ typedef struct bot_s
 } bot_t;
 
 extern bot_t *botlist;
+extern int maxbots;
 
 void AppendPathSeperator(char *path, int length);
 bot_t *FindBotWithName(char *name);

@@ -25,6 +25,7 @@
 #define MID_BOT_ADDRANDOM			6
 #define MID_BOT_REMOVE				7
 #define MID_BOT_REMOVEALL			8
+#define MID_BOT_MIN_PLAYERS			58
 #define MID_BOT_ADD_FIRST			256
 #define MID_BOT_ADD_LAST			511
 #define MID_BOT_REMOVE_FIRST		512
@@ -268,6 +269,19 @@ void MenuProc(edict_t *ent, int id)
 	} //end if
 	switch(id)
 	{
+		case MID_BOT_MIN_PLAYERS:
+		{
+			cvar_t *minplayers = gi.cvar("minimumplayers", "0", 0);
+			if (minplayers->value < 2) minplayers->value = 2;
+			else minplayers->value = floor(minplayers->value) + 1;
+			if (minplayers->value > maxbots || minplayers->value >= maxclients->value)
+				minplayers->value = 0;
+			sprintf(buf, "%d", (int) minplayers->value);
+			gi.cvar_set("minimumplayers", buf);
+			sprintf(buf, "%-18s%s", "minimum players", minplayers->value > 0 ? minplayers->string : "off");
+			ChangeMenuItemName(mainmenu, MID_BOT_MIN_PLAYERS, buf);
+			break;
+		} //end case
 		case MID_BOT_ADD: //entering the add bot menu
 		{
 			SetupAddBotMenu();
@@ -516,6 +530,13 @@ void CreateBotMenu(void)
 	{
 		sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
 		QuakeAppendMenu(botmenu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
+	}
+	if(!ra->value)
+	{
+		cvar_t *minplayers = gi.cvar("minimumplayers", "0", 0);
+		sprintf(buf, "%-18s%s", "minimum players", minplayers->value > 0 ? minplayers->string : "off");
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_MIN_PLAYERS, NULL, buf, NULL);
+		CheckForNewBotFile();
 	}
 	QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_ADD, addmenu, "add bot", NULL);
 	QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_ADDRANDOM, NULL, "add random", NULL);

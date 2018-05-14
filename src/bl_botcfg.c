@@ -47,6 +47,7 @@ typedef struct bot_s
 } bot_t;
 
 bot_t *botlist;
+int maxbots = 0;
 char botfilename[MAX_PATH];
 
 //===========================================================================
@@ -243,6 +244,7 @@ int LoadBotsFromFile(char *filename)
 	fclose(fp);
 	//if not at the end of the file something was wrong
 	if (c != EOF) return false;
+	maxbots = numbots;
 	gi.dprintf("loaded %d bot%s from %s\n", numbots, numbots==1?"":"s", filename);
 	return true;
 } //end of the function LoadBotsFromFile
