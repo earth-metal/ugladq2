@@ -189,7 +189,7 @@ int LoadBotsFromFile(char *filename)
 	if (!fp)
 	{
 		gi.dprintf("error opening %s\n", filename);
-		return false;
+		return 0;
 	} //end if
 
 	line = 0;
@@ -242,11 +242,8 @@ int LoadBotsFromFile(char *filename)
 		numbots++;
 	} //end while
 	fclose(fp);
-	//if not at the end of the file something was wrong
-	if (c != EOF) return false;
-	maxbots = numbots;
 	gi.dprintf("loaded %d bot%s from %s\n", numbots, numbots==1?"":"s", filename);
-	return true;
+	return numbots;
 } //end of the function LoadBotsFromFile
 //========================================================================
 //
@@ -289,7 +286,7 @@ void LoadBots(void)
 	strcat(botfile, gi.cvar("botfile", "bots.cfg", 0)->string);
 #endif //TOURNEY
 	//load bots from the main bot cfg file
-	LoadBotsFromFile(botfile);
+	maxbots = LoadBotsFromFile(botfile);
 	//load the bots from all *.cfg files in the "bots" sub-folder
 	strcat(path, "bots");
 	AppendPathSeperator(path, MAX_PATH);
@@ -302,7 +299,7 @@ void LoadBots(void)
 	{
 		strcpy(botfile, path);
 		strcat(botfile, fileinfo.name);
-		LoadBotsFromFile(botfile);
+		maxbots += LoadBotsFromFile(botfile);
 		done = _findnext(done, &fileinfo);
 	} //end while
 #else
@@ -310,7 +307,7 @@ void LoadBots(void)
 	for (i = 0; i < globbuf.gl_pathc; i++)
 	{
 		strcpy(botfile, globbuf.gl_pathv[i]);
-		LoadBotsFromFile(botfile);
+		maxbots += LoadBotsFromFile(botfile);
 	} //end for
 	globfree(&globbuf);
 #endif
