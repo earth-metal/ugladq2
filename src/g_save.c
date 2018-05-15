@@ -294,23 +294,27 @@ void InitGame (void)
 #ifdef CH
 	InitColoredHitman();
 #endif //CH
-#if defined(ZOID) && defined(ROCKETARENA) && defined(CH)
+#if defined(ZOID) && defined(ROCKETARENA)
 	if (ctf->value && ra->value)
 	{
 		gi.cvar_forceset("rocketarena", "0");
 		gi.error("WARNING: can't run CTF and Rocket Arena 2 at the same time\n");
 	} //end if
+#endif // ZOID && ROCKETARENA
+#if defined(ZOID) && defined(CH)
 	if (ctf->value && ch->value)
 	{
 		gi.cvar_forceset("ch", "0");
 		gi.error("WARNING: can't run CTF and CH at the same time\n");
 	} //end if
+#endif //ZOID && CH
+#if defined(ROCKETARENA) && defined(CH)
 	if (ra->value && ch->value)
 	{
 		gi.cvar_forceset("ch", "0");
 		gi.error("WARNING: can't run CH and Rocket Arena 2 at the same time\n");
 	} //end if
-#endif
+#endif // ROCKETARENA && CH
 #ifdef ROGUE
 	if(gamerules)
 	{
