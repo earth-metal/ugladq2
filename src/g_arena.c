@@ -89,6 +89,20 @@ void RA2JoinArena11(edict_t *ent, pmenu_t *p)
 	RA2JoinArena(ent, 11);
 }
 
+void *join_menu_functions[] = {
+	RA2JoinArena1,
+	RA2JoinArena2,
+	RA2JoinArena3,
+	RA2JoinArena4,
+	RA2JoinArena5,
+	RA2JoinArena6,
+	RA2JoinArena7,
+	RA2JoinArena8,
+	RA2JoinArena9,
+	RA2JoinArena10,
+	RA2JoinArena11
+};
+
 pmenu_t arena_menu[] = {
 	{ "*Quake 2 - Gladiator Bot",		PMENU_ALIGN_CENTER, NULL, NULL },
 	{ "*Rocket Arena 2 - Arena List",	PMENU_ALIGN_CENTER, NULL, NULL },
@@ -103,11 +117,11 @@ pmenu_t arena_menu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena8 },
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena9 },
 	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena10 },
-	{ "Use [ and ] to move cursor",	PMENU_ALIGN_LEFT, NULL, RA2JoinArena11 },
+	{ NULL,					PMENU_ALIGN_LEFT, NULL, RA2JoinArena11 },
+	{ "Use [ and ] to move cursor",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ "ENTER to select",	PMENU_ALIGN_LEFT, NULL, NULL },
 	{ "ESC to Exit Menu",	PMENU_ALIGN_LEFT, NULL, NULL },
-	{ "(TAB to Return)",	PMENU_ALIGN_LEFT, NULL, NULL },
-	{ "*v" UGLADQ2_VERSION,	PMENU_ALIGN_RIGHT, NULL, NULL }
+	{ "(TAB to Return)   v" UGLADQ2_VERSION,	PMENU_ALIGN_LEFT, NULL, NULL }
 };
 
 void RA2OpenArenaMenu(edict_t *ent)
@@ -406,8 +420,13 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 		if (num_arenas == 1)
 			arena = 1;
 		else if (ent->flags & FL_BOT)
-			arena = gi.cvar("arena", "1", 0)->value;
+		{
+			arena = (int) atof(Info_ValueForKey(ent->client->pers.userinfo, "arena"));
+			if (arena > num_arenas)
+				arena = (rand() % num_arenas) + 1;
+		}
 	}
+
 	if (observer)
 	{
 		dest = GetNextObserverSpawnPoint(arena);
@@ -605,9 +624,11 @@ void RA2_Init(edict_t *wsent)
 		if (i <= num_arenas)
 		{
 			arena_menu[j].text = RA2_GetArenaName(i);
+			arena_menu[j].SelectFunc = join_menu_functions[i-1];
 		}
 		else
 		{
+			arena_menu[j].text = NULL;
 			arena_menu[j].SelectFunc = NULL;
 		}
 

@@ -1196,19 +1196,12 @@ void InitClientResp (gclient_t *client)
 #ifdef ZOID
 	int ctf_team = client->resp.ctf_team;
 #endif //ZOID
-#ifdef ROCKETARENA
-	int context = client->resp.context;
-#endif //ROCKETARENA
 
 	memset (&client->resp, 0, sizeof(client->resp));
 
 #ifdef ZOID
 	client->resp.ctf_team = ctf_team;
 #endif //ZOID
-
-#ifdef ROCKETARENA
-	client->resp.context = context;
-#endif //ROCKETARENA
 
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->pers;
