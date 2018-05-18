@@ -1,3 +1,9 @@
+v0.98.3u
+--------------
+- Move bot team/arena selection to in-game "Bots" menu.
+- Add "minimum players" toggle to in-game "Bots" menu for DM or CTF.
+- RA2: Fix the arena menu and bot assignment to arenas when changing levels.
+
 v0.98.2u
 --------------
 - Remove player from team/arena when "spectator 1" is set; keep variable in sync.
