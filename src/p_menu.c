@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-#ifdef ZOID //#endif at end of file
+#if defined(ZOID) || defined(ROCKETARENA) //#endif at end of file
 
 void PMenu_Open(edict_t *ent, pmenu_t *entries, int cur, int num)
 {
@@ -193,4 +193,4 @@ void PMenu_Select(edict_t *ent)
 		p->SelectFunc(ent, p);
 }
 
-#endif //ZOID #ifdef at start of file
+#endif //ZOID || ROCKETARENA #ifdef at start of file
