@@ -18,7 +18,7 @@ endif
 # Compiler options
 CC=gcc
 #CC=i686-w64-mingw32-gcc
-BASE_CFLAGS=-Dstricmp=strcasecmp -DC_ONLY
+BASE_CFLAGS=-Dstricmp=strcasecmp -DC_ONLY -m32
 
 #use these cflags to optimize it
 CFLAGS=$(BASE_CFLAGS) -O6 -ffast-math -funroll-loops \

@@ -825,6 +825,7 @@ void BotLibImport_FreeMemory(void *ptr)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
+__attribute__((callee_pop_aggregate_return(0)))
 bsp_trace_t BotLibImport_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask)
 {
 	bsp_trace_t bsptrace;
