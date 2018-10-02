@@ -1045,6 +1045,7 @@ void SP_worldspawn (edict_t *ent)
 
 #ifdef BOT
 	paused = false;
+	sp_bots_queued = false;
 #endif //BOT
 	//---------------
 
