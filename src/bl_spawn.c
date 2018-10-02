@@ -38,6 +38,7 @@ typedef struct queuedbot_s
 } queuedbot_t;
 
 queuedbot_t *queuedbots;
+qboolean sp_bots_queued;
 
 //===========================================================================
 // spawns a client entity, initializes the edict and sets the pointer
@@ -662,6 +663,16 @@ void CheckMinimumPlayers(void)
 	queuedbot_t *bot;
 	int i, numplayers, numbots;
 	char buf[32];
+
+	//hack to load map-specific bots in "SP-DM" mode
+	if (!sp_bots_queued && deathmatch->value &&
+			gi.cvar("sp_dm", "0", 0)->value && level.time > 1.0)
+	{
+		sprintf(buf, "exec sp_dm/%s.cfg\n", level.mapname);
+		gi.AddCommandString(buf);
+		sp_bots_queued = true;
+		return;
+	}
 
 #ifndef TOURNEY
 	minplayers = gi.cvar("minimumplayers", "0", 0);
