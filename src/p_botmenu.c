@@ -517,118 +517,124 @@ void CreateBotMenu(void)
 	QuakeAppendMenu(creditsmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
 	QuakeAppendMenu(creditsmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	//
-	addmenu = QuakeCreateMenu(MID_BOT_ADD, "", "m_add"); //"Bot add menu"
-	removemenu = QuakeCreateMenu(MID_BOT_REMOVE, "", "m_remove"); //"Bot remove menu"
-	//
- 	botmenu = QuakeCreateMenu(MID_BOT, "", "m_bots"); //"Bot menu"
-	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
-	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
-	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
-	if(ctf->value)
-		QuakeAppendMenu(botmenu, MI_ITEM, MID_CTF_BOTTEAM, NULL, BotCTFTeamString(), NULL);
-	else if (ra->value)
+	if(!sp_dm->value)
 	{
-		sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
-		QuakeAppendMenu(botmenu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
+		addmenu = QuakeCreateMenu(MID_BOT_ADD, "", "m_add"); //"Bot add menu"
+		removemenu = QuakeCreateMenu(MID_BOT_REMOVE, "", "m_remove"); //"Bot remove menu"
+		//
+	 	botmenu = QuakeCreateMenu(MID_BOT, "", "m_bots"); //"Bot menu"
+		QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
+		QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
+		QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "", NULL);
+		if(ctf->value)
+			QuakeAppendMenu(botmenu, MI_ITEM, MID_CTF_BOTTEAM, NULL, BotCTFTeamString(), NULL);
+		else if (ra->value)
+		{
+			sprintf(buf, "%-18s%d", "bot arena", (int) arena->value);
+			QuakeAppendMenu(botmenu, MI_ITEM, MID_RA2_BOTARENA, NULL, buf, NULL);
+		}
+		if(!ra->value)
+		{
+			cvar_t *minplayers = gi.cvar("minimumplayers", "0", 0);
+			sprintf(buf, "%-18s%s", "minimum players", minplayers->value > 0 ? minplayers->string : "off");
+			QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_MIN_PLAYERS, NULL, buf, NULL);
+			CheckForNewBotFile();
+		}
+		QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_ADD, addmenu, "add bot", NULL);
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_ADDRANDOM, NULL, "add random", NULL);
+		QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_REMOVE, removemenu, "remove bot", NULL);
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_REMOVEALL, NULL, "remove all", NULL);
+		QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
+		QuakeAppendMenu(botmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
+		//Deathmatch
+		dmmenu = QuakeCreateMenu(MID_DM, "", "m_dm");
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_HEALTH, NULL, OnOffString("allow health", !((int) dmflags->value & DF_NO_HEALTH)), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_ITEMS, NULL, OnOffString("allow powerups", !((int) dmflags->value & DF_NO_ITEMS)), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_ARMOR, NULL, OnOffString("allow armor", !((int) dmflags->value & DF_NO_ARMOR)), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_WEAPONS_STAY, NULL, OnOffString("weapons stay", (int) dmflags->value & DF_WEAPONS_STAY), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_FALLING, NULL, OnOffString("falling damage", !((int) dmflags->value & DF_NO_FALLING)), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_INSTANT_ITEMS, NULL, OnOffString("instant items", (int) dmflags->value & DF_INSTANT_ITEMS), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_SAME_LEVEL, NULL, OnOffString("same map", (int) dmflags->value & DF_SAME_LEVEL), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_FRIENDLY_FIRE, NULL, OnOffString("friendly fire", !((int) dmflags->value & DF_NO_FRIENDLY_FIRE)), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_SPAWN_FARTHEST, NULL, OnOffString("spawn farthest", (int) dmflags->value & DF_SPAWN_FARTHEST), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_FORCE_RESPAWN, NULL, OnOffString("force respawn", (int) dmflags->value & DF_FORCE_RESPAWN), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_ALLOW_EXIT, NULL, OnOffString("allow exit", (int) dmflags->value & DF_ALLOW_EXIT), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_INFINITE_AMMO, NULL, OnOffString("infinite ammo", (int) dmflags->value & DF_INFINITE_AMMO), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_QUAD_DROP, NULL, OnOffString("quad drop", (int) dmflags->value & DF_QUAD_DROP), NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_FIXED_FOV, NULL, OnOffString("fixed FOV", (int) dmflags->value & DF_FIXED_FOV), NULL);
+		//Xatrix mission pack 1
+		if (xatrix->value)
+		{
+			QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_QUADFIRE_DROP, NULL, OnOffString("quad fire drop", (int) dmflags->value & DF_QUADFIRE_DROP), NULL);
+		} //end if
+		//Rogue mission pack 2
+		if (rogue->value)
+		{
+			QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_MINES, NULL, OnOffString("allow mines", !((int) dmflags->value & DF_NO_MINES)), NULL);
+			QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_STACK_DOUBLE, NULL, OnOffString("allow stack double", !((int) dmflags->value & DF_NO_STACK_DOUBLE)), NULL);
+			QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_NUKES, NULL, OnOffString("allow nukes", !((int) dmflags->value & DF_NO_NUKES)), NULL);
+			QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_SPHERES, NULL, OnOffString("allow spheres", !((int) dmflags->value & DF_NO_SPHERES)), NULL);
+		} //end if
+		QuakeAppendMenu(dmmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
+		QuakeAppendMenu(dmmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
+		//Capture The Flag
+		ctfmenu = QuakeCreateMenu(MID_CTF, "", "m_ctf");
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_FORCEJOIN, NULL, OnOffString("force join", (int) dmflags->value & DF_CTF_FORCEJOIN), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_ARMOR_PROTECT, NULL, OnOffString("armor protect", (int) dmflags->value & DF_ARMOR_PROTECT), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_NO_TECH, NULL, OnOffString("allow techs", !((int) dmflags->value & DF_CTF_NO_TECH)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_HOOK, NULL, OnOffString("offhand hook", (int) (gi.cvar("ctf_hook", "1", 0))->value), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_HEALTH, NULL, OnOffString("allow health", !((int) dmflags->value & DF_NO_HEALTH)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ITEMS, NULL, OnOffString("allow powerups", !((int) dmflags->value & DF_NO_ITEMS)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ARMOR, NULL, OnOffString("allow armor", !((int) dmflags->value & DF_NO_ARMOR)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_WEAPONS_STAY, NULL, OnOffString("weapons stay", (int) dmflags->value & DF_WEAPONS_STAY), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_FALLING, NULL, OnOffString("falling damage", !((int) dmflags->value & DF_NO_FALLING)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_INSTANT_ITEMS, NULL, OnOffString("instant items", (int) dmflags->value & DF_INSTANT_ITEMS), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_SAME_LEVEL, NULL, OnOffString("same map", (int) dmflags->value & DF_SAME_LEVEL), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_FRIENDLY_FIRE, NULL, OnOffString("friendly fire", !((int) dmflags->value & DF_NO_FRIENDLY_FIRE)), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_SPAWN_FARTHEST, NULL, OnOffString("spawn farthest", (int) dmflags->value & DF_SPAWN_FARTHEST), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_FORCE_RESPAWN, NULL, OnOffString("force respawn", (int) dmflags->value & DF_FORCE_RESPAWN), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_ALLOW_EXIT, NULL, OnOffString("allow exit", (int) dmflags->value & DF_ALLOW_EXIT), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_INFINITE_AMMO, NULL, OnOffString("infinite ammo", (int) dmflags->value & DF_INFINITE_AMMO), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_QUAD_DROP, NULL, OnOffString("quad drop", (int) dmflags->value & DF_QUAD_DROP), NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_FIXED_FOV, NULL, OnOffString("fixed FOV", (int) dmflags->value & DF_FIXED_FOV), NULL);
+		QuakeAppendMenu(ctfmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
+		QuakeAppendMenu(ctfmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
+		//Rocket Arena 2
+		ra2menu = QuakeCreateMenu(MID_RA2, "", "m_ra2");
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTCYCLE, NULL, OnOffString("bot cycle", (int) (gi.cvar("ra_botcycle", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SELFDAMAGE, NULL, OnOffString("self damage", (int) (gi.cvar("selfdamage", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_HEALTHPROTECT, NULL, OnOffString("health protect", (int) (gi.cvar("healthprotect", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_ARMORPROTECT, NULL, OnOffString("armor protect", (int) (gi.cvar("armorprotect", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SHOTGUN, NULL, OnOffString("Shotgun", (int) (gi.cvar("shotgun", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SUPERSHOTGUN, NULL, OnOffString("Super Shotgun", (int) (gi.cvar("supershotgun", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_MACHINEGUN, NULL, OnOffString("Machinegun", (int) (gi.cvar("machinegun", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_CHAINGUN, NULL, OnOffString("Chaingun", (int) (gi.cvar("chaingun", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_GRENADELAUNCHER, NULL, OnOffString("Grenade Launcher", (int) (gi.cvar("grenadelauncher", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_ROCKETLAUNCHER, NULL, OnOffString("Rocket Launcher", (int) (gi.cvar("rocketlauncher", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_HYPERBLASTER, NULL, OnOffString("Hyperblaster", (int) (gi.cvar("hyperblaster", "1", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_RAILGUN, NULL, OnOffString("Railgun", (int) (gi.cvar("railgun", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BFG, NULL, OnOffString("BFG", (int) (gi.cvar("bfg", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_FASTSWITCH, NULL, OnOffString("fast weap-switch", (int) (gi.cvar("ra_fastswitch", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_MSTART_AUTO, NULL, OnOffString("match auto-start", (int) (gi.cvar("mstart_auto", "0", 0))->value), NULL);
+		QuakeAppendMenu(ra2menu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
+		QuakeAppendMenu(ra2menu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	}
-	if(!ra->value)
-	{
-		cvar_t *minplayers = gi.cvar("minimumplayers", "0", 0);
-		sprintf(buf, "%-18s%s", "minimum players", minplayers->value > 0 ? minplayers->string : "off");
-		QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_MIN_PLAYERS, NULL, buf, NULL);
-		CheckForNewBotFile();
-	}
-	QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_ADD, addmenu, "add bot", NULL);
-	QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_ADDRANDOM, NULL, "add random", NULL);
-	QuakeAppendMenu(botmenu, MI_SUBMENU, MID_BOT_REMOVE, removemenu, "remove bot", NULL);
-	QuakeAppendMenu(botmenu, MI_ITEM, MID_BOT_REMOVEALL, NULL, "remove all", NULL);
-	QuakeAppendMenu(botmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
-	QuakeAppendMenu(botmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
-	//Deathmatch
-	dmmenu = QuakeCreateMenu(MID_DM, "", "m_dm");
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_HEALTH, NULL, OnOffString("allow health", !((int) dmflags->value & DF_NO_HEALTH)), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_ITEMS, NULL, OnOffString("allow powerups", !((int) dmflags->value & DF_NO_ITEMS)), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_ARMOR, NULL, OnOffString("allow armor", !((int) dmflags->value & DF_NO_ARMOR)), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_WEAPONS_STAY, NULL, OnOffString("weapons stay", (int) dmflags->value & DF_WEAPONS_STAY), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_FALLING, NULL, OnOffString("falling damage", !((int) dmflags->value & DF_NO_FALLING)), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_INSTANT_ITEMS, NULL, OnOffString("instant items", (int) dmflags->value & DF_INSTANT_ITEMS), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_SAME_LEVEL, NULL, OnOffString("same map", (int) dmflags->value & DF_SAME_LEVEL), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_FRIENDLY_FIRE, NULL, OnOffString("friendly fire", !((int) dmflags->value & DF_NO_FRIENDLY_FIRE)), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_SPAWN_FARTHEST, NULL, OnOffString("spawn farthest", (int) dmflags->value & DF_SPAWN_FARTHEST), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_FORCE_RESPAWN, NULL, OnOffString("force respawn", (int) dmflags->value & DF_FORCE_RESPAWN), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_ALLOW_EXIT, NULL, OnOffString("allow exit", (int) dmflags->value & DF_ALLOW_EXIT), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_INFINITE_AMMO, NULL, OnOffString("infinite ammo", (int) dmflags->value & DF_INFINITE_AMMO), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_QUAD_DROP, NULL, OnOffString("quad drop", (int) dmflags->value & DF_QUAD_DROP), NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_FIXED_FOV, NULL, OnOffString("fixed FOV", (int) dmflags->value & DF_FIXED_FOV), NULL);
-	//Xatrix mission pack 1
-	if (xatrix->value)
-	{
-		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_QUADFIRE_DROP, NULL, OnOffString("quad fire drop", (int) dmflags->value & DF_QUADFIRE_DROP), NULL);
-	} //end if
-	//Rogue mission pack 2
-	if (rogue->value)
-	{
-		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_MINES, NULL, OnOffString("allow mines", !((int) dmflags->value & DF_NO_MINES)), NULL);
-		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_STACK_DOUBLE, NULL, OnOffString("allow stack double", !((int) dmflags->value & DF_NO_STACK_DOUBLE)), NULL);
-		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_NUKES, NULL, OnOffString("allow nukes", !((int) dmflags->value & DF_NO_NUKES)), NULL);
-		QuakeAppendMenu(dmmenu, MI_ITEM, MID_DM_NO_SPHERES, NULL, OnOffString("allow spheres", !((int) dmflags->value & DF_NO_SPHERES)), NULL);
-	} //end if
-	QuakeAppendMenu(dmmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
-	QuakeAppendMenu(dmmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
-	//Capture The Flag
-	ctfmenu = QuakeCreateMenu(MID_CTF, "", "m_ctf");
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_FORCEJOIN, NULL, OnOffString("force join", (int) dmflags->value & DF_CTF_FORCEJOIN), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_ARMOR_PROTECT, NULL, OnOffString("armor protect", (int) dmflags->value & DF_ARMOR_PROTECT), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_NO_TECH, NULL, OnOffString("allow techs", !((int) dmflags->value & DF_CTF_NO_TECH)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_CTF_HOOK, NULL, OnOffString("offhand hook", (int) (gi.cvar("ctf_hook", "1", 0))->value), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_HEALTH, NULL, OnOffString("allow health", !((int) dmflags->value & DF_NO_HEALTH)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ITEMS, NULL, OnOffString("allow powerups", !((int) dmflags->value & DF_NO_ITEMS)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_ARMOR, NULL, OnOffString("allow armor", !((int) dmflags->value & DF_NO_ARMOR)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_WEAPONS_STAY, NULL, OnOffString("weapons stay", (int) dmflags->value & DF_WEAPONS_STAY), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_FALLING, NULL, OnOffString("falling damage", !((int) dmflags->value & DF_NO_FALLING)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_INSTANT_ITEMS, NULL, OnOffString("instant items", (int) dmflags->value & DF_INSTANT_ITEMS), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_SAME_LEVEL, NULL, OnOffString("same map", (int) dmflags->value & DF_SAME_LEVEL), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_NO_FRIENDLY_FIRE, NULL, OnOffString("friendly fire", !((int) dmflags->value & DF_NO_FRIENDLY_FIRE)), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_SPAWN_FARTHEST, NULL, OnOffString("spawn farthest", (int) dmflags->value & DF_SPAWN_FARTHEST), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_FORCE_RESPAWN, NULL, OnOffString("force respawn", (int) dmflags->value & DF_FORCE_RESPAWN), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_ALLOW_EXIT, NULL, OnOffString("allow exit", (int) dmflags->value & DF_ALLOW_EXIT), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_INFINITE_AMMO, NULL, OnOffString("infinite ammo", (int) dmflags->value & DF_INFINITE_AMMO), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_QUAD_DROP, NULL, OnOffString("quad drop", (int) dmflags->value & DF_QUAD_DROP), NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_DM_FIXED_FOV, NULL, OnOffString("fixed FOV", (int) dmflags->value & DF_FIXED_FOV), NULL);
-	QuakeAppendMenu(ctfmenu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
-	QuakeAppendMenu(ctfmenu, MI_ITEM, MID_BACK, NULL, "back", NULL);
-	//Rocket Arena 2
-	ra2menu = QuakeCreateMenu(MID_RA2, "", "m_ra2");
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_DM_TEAMPLAY, NULL, TeamPlayMenuString(), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BOTCYCLE, NULL, OnOffString("bot cycle", (int) (gi.cvar("ra_botcycle", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SELFDAMAGE, NULL, OnOffString("self damage", (int) (gi.cvar("selfdamage", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_HEALTHPROTECT, NULL, OnOffString("health protect", (int) (gi.cvar("healthprotect", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_ARMORPROTECT, NULL, OnOffString("armor protect", (int) (gi.cvar("armorprotect", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SHOTGUN, NULL, OnOffString("Shotgun", (int) (gi.cvar("shotgun", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_SUPERSHOTGUN, NULL, OnOffString("Super Shotgun", (int) (gi.cvar("supershotgun", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_MACHINEGUN, NULL, OnOffString("Machinegun", (int) (gi.cvar("machinegun", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_CHAINGUN, NULL, OnOffString("Chaingun", (int) (gi.cvar("chaingun", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_GRENADELAUNCHER, NULL, OnOffString("Grenade Launcher", (int) (gi.cvar("grenadelauncher", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_ROCKETLAUNCHER, NULL, OnOffString("Rocket Launcher", (int) (gi.cvar("rocketlauncher", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_HYPERBLASTER, NULL, OnOffString("Hyperblaster", (int) (gi.cvar("hyperblaster", "1", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_RAILGUN, NULL, OnOffString("Railgun", (int) (gi.cvar("railgun", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_BFG, NULL, OnOffString("BFG", (int) (gi.cvar("bfg", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_FASTSWITCH, NULL, OnOffString("fast weap-switch", (int) (gi.cvar("ra_fastswitch", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_RA2_MSTART_AUTO, NULL, OnOffString("match auto-start", (int) (gi.cvar("mstart_auto", "0", 0))->value), NULL);
-	QuakeAppendMenu(ra2menu, MI_SEPERATOR, -1, NULL, "-----------", NULL);
-	QuakeAppendMenu(ra2menu, MI_ITEM, MID_BACK, NULL, "back", NULL);
 	//
 	mainmenu = QuakeCreateMenu(MID_MAIN, "", "m_main"); //"Main menu"
 	QuakeAppendMenu(mainmenu, MI_SEPERATOR, -1, NULL, "", NULL);
 	QuakeAppendMenu(mainmenu, MI_SEPERATOR, -1, NULL, "", NULL);
 	QuakeAppendMenu(mainmenu, MI_SEPERATOR, -1, NULL, "", NULL);
 	QuakeAppendMenu(mainmenu, MI_SEPERATOR, -1, NULL, "", NULL);
-	QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_BOT, botmenu, "Bots", NULL);
-	//
-	if (!ctf->value && !ra->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_DM, dmmenu, "DM", NULL);
-	if (ctf->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_CTF, ctfmenu, "CTF", NULL);
-	if (ra->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_RA2, ra2menu, "RA2", NULL);
+	if(!sp_dm->value)
+	{
+		QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_BOT, botmenu, "Bots", NULL);
+		//
+		if (!ctf->value && !ra->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_DM, dmmenu, "DM", NULL);
+		if (ctf->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_CTF, ctfmenu, "CTF", NULL);
+		if (ra->value) QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_RA2, ra2menu, "RA2", NULL);
+	}
 	//
 	QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_HELP, helpmenu, "Help", NULL);
 	QuakeAppendMenu(mainmenu, MI_SUBMENU, MID_HELP, creditsmenu, "Credits", NULL);
