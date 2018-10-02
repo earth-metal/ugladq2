@@ -22,6 +22,7 @@ int	meansOfDeath;
 
 #ifdef BOT
 int paused;
+cvar_t *sp_dm;
 #endif //BOT
 
 #ifdef AQ2

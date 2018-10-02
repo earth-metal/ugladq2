@@ -666,7 +666,7 @@ void CheckMinimumPlayers(void)
 
 	//hack to load map-specific bots in "SP-DM" mode
 	if (!sp_bots_queued && deathmatch->value &&
-			gi.cvar("sp_dm", "0", 0)->value && level.time > 1.0)
+			sp_dm->value && level.time > 1.0)
 	{
 		sprintf(buf, "exec sp_dm/%s.cfg\n", level.mapname);
 		gi.AddCommandString(buf);

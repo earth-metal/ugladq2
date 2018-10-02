@@ -796,6 +796,7 @@ extern	cvar_t	*randomrespawn;
 #ifdef BOT
 extern int paused;
 extern qboolean sp_bots_queued;
+extern cvar_t *sp_dm;
 #endif //BOT
 
 // this is for the count of monsters

@@ -322,6 +322,7 @@ void InitGame (void)
 	}
 #endif //ROGUE
 #ifdef BOT
+	sp_dm = gi.cvar("sp_dm", "0", 0);
 	BotSetup();
 	CreateBotMenu();
 #endif //BOT
