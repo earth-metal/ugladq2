@@ -269,6 +269,20 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	// if multiplayer, let everyone know who hit the exit
 	if (deathmatch->value)
 	{
+		// hack to direct SP-DM newgame to the correct map for selected skill
+		if (Q_stricmp("sp_dm", level.mapname) == 0)
+		{
+			if(skill->value == 0)
+				gi.AddCommandString("exec sp_dm/ngeasy.cfg\n");
+			else if(skill->value == 1)
+				gi.AddCommandString("exec sp_dm/ngmedium.cfg\n");
+			else if(skill->value == 2)
+				gi.AddCommandString("exec sp_dm/nghard.cfg\n");
+			else
+				gi.AddCommandString("exec sp_dm/nghtmare.cfg\n");
+			return;
+		}
+
 		if (activator && activator->client)
 			gi.bprintf (PRINT_HIGH, "%s exited the level.\n", activator->client->pers.netname);
 	}
