@@ -288,9 +288,42 @@ void EndDMLevel (void)
 	edict_t		*ent;
 	char *s, *t, *f;
 	static const char *seps = " ,\n\r";
+#ifdef BOT
+	qboolean sp_winner = false;
+	int i, highscore = -1;
 
+	if (sp_dm->value)
+	{
+		//see if a human had the highest score
+		for (i=0 ; i<game.maxclients ; i++)
+		{
+			ent = g_edicts + 1 + i;
+
+			if (!ent->inuse || game.clients[i].resp.spectator)
+				continue;
+
+			if (game.clients[i].resp.score > highscore)
+			{
+				highscore = game.clients[i].resp.score;
+
+				if (ent->flags & FL_BOT)
+					sp_winner = false;
+				else
+					sp_winner = true;
+			}
+			else if (game.clients[i].resp.score == highscore)
+			{
+				sp_winner = false;
+			}
+		}
+	}
+#endif //BOT
 	// stay on same level flag
-	if ((int)dmflags->value & DF_SAME_LEVEL)
+	if (((int)dmflags->value & DF_SAME_LEVEL)
+#ifdef BOT
+			|| (sp_dm->value && !sp_winner)
+#endif //BOT
+			)
 	{
 		BeginIntermission (CreateTargetChangeLevel (level.mapname) );
 		return;
