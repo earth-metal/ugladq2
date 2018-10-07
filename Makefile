@@ -34,7 +34,7 @@ else
  ifeq ($(CC), i686-w64-mingw32-gcc)
   SHLIBEXT=x86.dll
  else
-  SHLIBEXT=.so
+  SHLIBEXT=i386.so
  endif
 endif
 SHLIBCFLAGS=-fPIC
