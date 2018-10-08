@@ -1,3 +1,7 @@
+v0.99u
+--------------
+- Added support for optional "Singleplayer Deathmatch" campaign, see README.md.
+
 v0.98.3u
 --------------
 - Move bot team/arena selection to in-game "Bots" menu.

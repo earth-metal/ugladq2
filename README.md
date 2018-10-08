@@ -5,20 +5,26 @@ This is an Unofficial effort to clean up the rough edges in the game source for 
 
 Compatibility
 ---------------
-While this game source will probably build with GCC on virtually any architecture type, compiled versions of the proprietary Gladiator Bot library are only available for 32-bit Windows and Linux systems.  Compatibility has been verified running Quake 2 v3.24 ("The Unofficial Patch") in Windows XP.
+While this game source will probably build with GCC on virtually any architecture type, compiled versions of the proprietary Gladiator Bot library are only available for 32-bit Windows and Linux systems.
 
-Compatibility for Win32 applications is supported in Windows 10, so users should be able to run the uGladQ2 DLL and play against bots using a 32-bit Quake 2 engine such as v3.20 or v3.24.  Modified engines such as KMQ2 and Quake2XP will not work with this DLL!
+Compatibility for Win32 applications is supported in Windows 10, so users should be able to run the uGladQ2 DLL and play against bots using a 32-bit Quake 2 engine such as v3.20 or v3.24.  Modified engines such as KMQ2 and Quake2XP will not work with this DLL!  Compatibility has been verified running Quake 2 v3.24 ("The Unofficial Patch") in Windows XP.
+
 Linux users will either need to run a 32-bit OS variant or install a 32-bit compatibility layer applicable for the official Quake 2 executable they wish to use.
 
 Gladiator Bot Downloads & Documentation
 ---------------
 As of April 2018, the original Gladiator downloads and documentation for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
+
+An optional "Singleplayer Deathmatch" campaign can be downloaded at http://www.mediafire.com/file/l5zb6rmo9gnso55/gladq2096_to_099u_patch.zip/file
  
 Building
 ---------------
-- For Windows users, a compiled gamex86.dll is downloadable from this repository.
-- Windows users wishing to compile their own uGladQ2 library will need to install Mingw-w64 (https://mingw-w64.org).  In a Mingw-w64 terminal, navigate to the directory containing the uGladQ2 Makefile and run "mingw32-make" to create the "gamex86.dll" file.
-- Linux users, navigate to the Makefile's parent directory in a terminal and run the "make" command.  Rename the generated "game.so" file to be suitable for your Q2 engine.
+## Windows
+- A compiled gamex86.dll is downloadable from this repository.
+- Users wishing to compile their own uGladQ2 library will need to install Mingw-w64 (https://mingw-w64.org).  In a Mingw-w64 terminal, navigate to the directory containing the uGladQ2 Makefile and run "mingw32-make" to create the "gamex86.dll" file.
+## Linux
+- A compiled gamei386.so is downloadable from this repository.  (This was generated using Ubuntu's "gcc-multilib" library.  It may not work for other distributions.)
+- Users wishing to compile their own uGladQ2 library, navigate to the Makefile's parent directory in a terminal and run the "make" command to create the "gamei386.so" file.
 
 Installation
 ---------------
@@ -37,6 +43,14 @@ NOTES
 
 ra_fastswitch <0/1>: Default: OFF.
 - Toggle "fast weapon switching" off/on in Rocket Arena matches.  Available from the in-game "RA2" menu.
+
+sp_dm <0/1>: Default: OFF.
+- Enables "Singleplayer Deathmatch" mode when deathmatch is also enabled.
+
+NOTES
+1. After a new map is loaded the server executes a config at "sp_dm/[mapname].cfg"
+2. Disables usage of the "Bots" and "DM/CTF/RA2" in-game menus.
+3. Current map is replayed until a human player has the highest score.
 
 Obsolete Variables
 --------------
