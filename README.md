@@ -19,10 +19,10 @@ An optional "Singleplayer Deathmatch" campaign can be downloaded at http://www.m
  
 Building
 ---------------
-## Windows
+### Windows
 - A compiled gamex86.dll is downloadable from this repository.
 - Users wishing to compile their own uGladQ2 library will need to install Mingw-w64 (https://mingw-w64.org).  In a Mingw-w64 terminal, navigate to the directory containing the uGladQ2 Makefile and run "mingw32-make" to create the "gamex86.dll" file.
-## Linux
+### Linux
 - A compiled gamei386.so is downloadable from this repository.  (This was generated using Ubuntu's "gcc-multilib" library.  It may not work for other distributions.)
 - Users wishing to compile their own uGladQ2 library, navigate to the Makefile's parent directory in a terminal and run the "make" command to create the "gamei386.so" file.
 
