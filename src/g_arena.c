@@ -526,10 +526,6 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 	VectorClear(ent->s.angles);
 	VectorClear(ent->client->ps.viewangles);
 	VectorClear(ent->client->v_angle);
-	// telefrag avoidance at destination
-	if (!KillBox(ent))
-	{
-	} //endif
 	if (observer)
 	{
 		ent->flags |= FL_NOTARGET;
@@ -548,11 +544,13 @@ void RA2_MoveToArena(edict_t *ent, int arena, qboolean observer)
 		} //end if
 		else
 		{
+			KillBox(ent);
 			SetObserverMode(ent, NORMAL);
 		} //end else
 	} //end if
 	else
 	{
+		KillBox(ent);
 		ent->takedamage = DAMAGE_YES;
 		SetObserverMode(ent, NORMAL);
 	} //end else
