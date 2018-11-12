@@ -7,9 +7,9 @@ Compatibility
 ---------------
 While this game source will probably build with GCC on virtually any architecture type, compiled versions of the proprietary Gladiator Bot library are only available for 32-bit Windows and Linux systems.
 
-Compatibility for Win32 applications is supported in Windows 10, so users should be able to run the uGladQ2 DLL and play against bots using a 32-bit Quake 2 engine such as v3.20 or v3.24.  Modified engines such as KMQ2 and Quake2XP will not work with this DLL!  Compatibility has been verified running Quake 2 v3.24 ("The Unofficial Patch") in Windows XP.
+Compatibility has been verified running Quake 2 v3.20 on Windows XP.  Compatibility for Win32 applications is supported in Windows 10, so users should be able to run the uGladQ2 DLL and play against bots using any 32-bit Quake 2 engine.  However, engines that use non-standard game libraries, such as KMQ2, will not work with uGladQ2!
 
-Linux users will either need to run a 32-bit OS variant or install a 32-bit compatibility layer applicable for the official Quake 2 executable they wish to use.
+Linux users will either need to run a 32-bit OS variant or install a 32-bit compatibility layer applicable for the Quake 2 executable they wish to use.
 
 Gladiator Bot Downloads & Documentation
 ---------------
