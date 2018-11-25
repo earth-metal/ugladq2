@@ -13,9 +13,10 @@ Linux users will either need to run a 32-bit OS variant or install a 32-bit comp
 
 Gladiator Bot Downloads & Documentation
 ---------------
-As of April 2018, the original Gladiator downloads and documentation for 32-bit Windows and Linux are available at http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
-
-An optional "Singleplayer Deathmatch" campaign can be downloaded at http://www.mediafire.com/file/l5zb6rmo9gnso55/gladq2096_to_099u_patch.zip/file
+### v0.96 Full Install
+- Windows & Linux: http://mrelusive.com/oldprojects/gladiator/download.shtml.htm
+### v0.99u Patch, including "Singleplayer Deathmatch" campaign
+- Windows & Linux: http://www.mediafire.com/file/l5zb6rmo9gnso55/gladq2096_to_099u_patch.zip/file
  
 Building
 ---------------
