@@ -26,10 +26,8 @@ Building
 ### Linux
 - A compiled gamei386.so is downloadable from this repository.  (This was generated using Ubuntu's "gcc-multilib" library.  It may not work for other distributions.)
 - Users wishing to compile their own uGladQ2 library, navigate to the Makefile's parent directory in a terminal and run the "make" command to create the "gamei386.so" file.
-
-Installation
----------------
-Make a backup of any original .dll (or .so) files if desired.  Place the uGladQ2 library into the "gladiator" folder in your Q2 directory, then start Quake 2 normally.
+### Installation
+- Make a backup of any original .dll (or .so) files if desired.  Place the uGladQ2 library into the "gladiator" folder in your Q2 directory, then start Quake 2 normally.
 
 New Console Variables
 --------------
